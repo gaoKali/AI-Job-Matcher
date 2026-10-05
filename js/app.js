@@ -264,16 +264,24 @@
     optimizationTimer=setInterval(()=>{$('optimization-loading-text').textContent=hints[++index%hints.length];},3500);
   }
   function renderOptimization(result,role){
-    const items=values=>values.length?list(values):'<p class="subtle">当前未提供足够信息，请结合原文核对。</p>';
-    const compare=(title,entries)=>entries.length?'<article class="card optimization-card"><h3>'+title+'</h3>'+entries.map(item=>'<section class="rewrite-item"><h4>'+escape(item.company?item.company+' · '+item.title:item.name)+'</h4><div class="rewrite-grid"><div class="original-copy"><span class="overline">原文</span><p>'+escape(item.original)+'</p></div><div class="optimized-copy"><span class="overline">优化后</span><p>'+escape(item.optimized)+'</p></div></div><p class="rewrite-reason"><strong>为什么这么改：</strong>'+escape(item.reason)+'</p></section>').join('')+'</article>':'';
+    const checks=window.OptimizationContract.readChecks(result.factChecks);
+    const items=(values,empty='暂无需要补充的内容。')=>values.length?list(values):'<p class="subtle">'+empty+'</p>';
+    const priority=values=>items(values.slice(0,2))+(values.length>2?'<details class="quality-details"><summary>展开其余 '+(values.length-2)+' 项</summary>'+items(values.slice(2))+'</details>':'');
+    const fold=(title,content,open=false)=>'<details class="card optimization-card quality-details"'+(open?' open':'')+'><summary>'+title+'</summary><div class="quality-detail-content">'+content+'</div></details>';
+    const compare=(title,entries,section)=>entries.length?'<article class="card optimization-card"><h3>'+title+'</h3>'+entries.map((item,index)=>{
+      const flagged=checks.issues.some(v=>v.section===section&&v.index===index);
+      const name=item.company?(item.company===window.OptimizationContract.fallback?'原文片段':item.company)+' · '+(item.title===window.OptimizationContract.fallback?'职位待确认':item.title):item.name;
+      return '<section class="rewrite-item"><h4>'+escape(name)+'</h4>'+(flagged?'<p class="fact-badge">建议确认真实性 · 未确认的改写已保留原文</p>':'')+'<div class="rewrite-grid"><div class="original-copy"><span class="overline">原文</span><p>'+escape(item.original)+'</p></div><div class="optimized-copy"><span class="overline">优化后</span><p>'+escape(item.optimized)+'</p></div></div><details class="quality-details rewrite-reason"><summary>为什么这么改</summary><p>'+escape(item.reason)+'</p></details></section>';
+    }).join('')+'</article>':'';
+    const factDetails=checks.issues.length?'<article class="card optimization-card evidence-card"><h3>建议确认真实性</h3><p>基础核对发现 '+checks.issues.length+' 处待确认内容，已保留原文或撤回不确定的改写，其余结果可正常查看。</p><details class="quality-details"><summary>展开事实核对说明</summary>'+items(checks.issues.map(v=>v.message))+'</details></article>':'';
     $('optimization-results').innerHTML=
-      '<article class="card optimization-card"><div class="optimization-overview"><div><p class="eyebrow">岗位匹配概览</p><h3>'+escape(role)+'</h3><p>'+escape(result.jdSummary)+'</p></div><div class="score"><strong>'+escape(result.matchScore)+'</strong><span>原始简历匹配度 / 100</span></div></div><p class="inline-note">评分反映现有简历与本次 JD 的证据匹配程度，不是录用概率。JD 信息少时请谨慎参考。</p><div class="chips">'+result.importantKeywords.map(s=>'<span class="chip">'+escape(s)+'</span>').join('')+'</div><div class="analysis-grid"><div><h4>已匹配优势</h4>'+items(result.matchedStrengths)+'</div><div><h4>主要差距</h4>'+items(result.gaps)+'</div></div></article>'+
-      '<article class="card optimization-card"><h3>这次重点优化了什么</h3>'+items(result.optimizationSummary)+'</article>'+
-      '<article class="card optimization-card"><h3>个人简介优化</h3><p class="plain-copy">'+escape(result.optimizedProfile)+'</p></article>'+
-      compare('工作经历优化',result.optimizedExperiences)+compare('项目经历优化',result.optimizedProjects)+
-      '<article class="card optimization-card"><h3>建议重点展示的真实技能</h3>'+items(result.optimizedSkills)+'</article>'+
-      '<article class="card optimization-card evidence-card"><h3>这些信息如果你有，建议补充</h3><p class="inline-note">以下问题没有写入优化简历。只在确实具备时补充真实经历和数据。</p>'+items(result.missingEvidence)+items(result.suggestedQuestions)+'</article>'+
-      '<article class="card optimization-card"><div class="section-heading compact"><div><h3>完整优化版简历</h3><p>请对照原文核对后使用。未确认的事实保留原文，不自动补写。</p></div><button type="button" class="button primary" id="copy-resume">复制优化简历</button></div><pre class="full-resume" id="optimized-resume-text"></pre><p id="copy-status" class="inline-note" role="status"></p><button type="button" class="button secondary" id="reoptimize">调整要求重新优化</button></article>';
+      '<article class="card optimization-card"><div class="optimization-overview"><div><p class="eyebrow">岗位匹配概览</p><h3>'+escape(role)+'</h3><p>'+escape(result.jdSummary)+'</p></div><div class="score"><strong>'+escape(result.matchScore)+'</strong><span>原始简历匹配度 / 100</span></div></div><p class="inline-note">评分反映本次 JD 与已有经历的证据匹配，不是录用概率。缺少描述不等于缺少能力。</p><div class="analysis-grid"><div><h4>最相关的优势</h4>'+priority(result.matchedStrengths)+'</div><div><h4>最需要补充的差距</h4>'+priority(result.gaps)+'</div></div>'+fold('查看 JD 关键词','<div class="chips">'+result.importantKeywords.map(s=>'<span class="chip">'+escape(s)+'</span>').join('')+'</div>')+'</article>'+
+      factDetails+compare('工作经历优化',result.optimizedExperiences,'optimizedExperiences')+compare('项目经历优化',result.optimizedProjects,'optimizedProjects')+
+      '<article class="card optimization-card"><div class="section-heading compact"><div><h3>完整优化版简历</h3><p>与上面的经历改写使用同一份内容，补充建议不会写入正文。</p></div><button type="button" class="button primary" id="copy-resume">复制优化简历</button></div><p class="submission-note">AI 仅基于你提供的真实经历进行改写。投递前请再次确认时间、数据、技能和项目描述准确无误。</p><pre class="full-resume" id="optimized-resume-text"></pre><button type="button" class="text-button" id="toggle-full-resume" aria-expanded="false" aria-controls="optimized-resume-text">展开全文</button><p id="copy-status" class="inline-note" role="status"></p><button type="button" class="button secondary" id="reoptimize">调整要求重新优化</button></article>'+
+      fold('这次重点优化了什么',items(result.optimizationSummary))+
+      (result.optimizedProfile!==window.OptimizationContract.fallback?fold('个人简介优化','<p class="plain-copy">'+escape(result.optimizedProfile)+'</p>'):'')+
+      fold('建议重点展示的真实技能',items(result.optimizedSkills,'当前没有可确认的技能条目，请核对原简历。'))+
+      fold('这些信息如果你有，建议补充','<p class="inline-note">仅在确实具备时补充真实经历和数据，以下内容未进入正式简历。</p>'+items(result.missingEvidence)+items(result.suggestedQuestions));
     $('optimized-resume-text').textContent=result.fullOptimizedResume;
     $('optimization-results').hidden=false;
     $('optimization-results').scrollIntoView({block:'start'});
@@ -298,6 +306,7 @@
     }finally{if(generation===state.generation){state.busy=false;state.optimizeAbort=null;stopOptimizationLoading();}}
   });
   $('optimization-results').addEventListener('click',async event=>{
+    if(event.target.closest('#toggle-full-resume')){const button=$('toggle-full-resume'),expanded=button.getAttribute('aria-expanded')!=='true';button.setAttribute('aria-expanded',String(expanded));button.textContent=expanded?'收起全文':'展开全文';$('optimized-resume-text').classList.toggle('expanded',expanded);}
     if(event.target.closest('#reoptimize')){if(state.busy)return;$('optimization-form').scrollIntoView({block:'start'});$('target-jd').focus();announce('调整要求后，点击开始优化简历。');}
     if(event.target.closest('#copy-resume')&&state.optimization){
       const button=$('copy-resume');button.disabled=true;

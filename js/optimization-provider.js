@@ -15,7 +15,7 @@ window.ResumeOptimization={endpoint,async optimize(body,{signal}={}){
   if(/^[a-f0-9-]{36}$/i.test(payload?.error?.requestId||''))requestId=payload.error.requestId;
   if(!response.ok)throw a.failure(Object.hasOwn(a.messages,payload?.error?.code)?payload.error.code:'UNAVAILABLE');
   if(payload.mode!=='live')throw a.failure('INVALID_SCHEMA');
-  const result=contract.validate(contract.normalize(payload.optimization));report(null);return result;
+  const result=contract.validate(contract.normalize(payload.optimization));result.factChecks=contract.readChecks(payload.optimization.factChecks);report(null);return result;
  }catch(error){const code=signal?.aborted?'CANCELLED':timedOut?'TIMEOUT':Object.hasOwn(a.messages,error.code)?error.code:'NETWORK';report(code);throw Object.assign(a.failure(code),{status,requestId});}
  finally{clearTimeout(timer);signal?.removeEventListener('abort',cancel);}
 }};

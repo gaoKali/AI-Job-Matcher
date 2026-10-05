@@ -1,0 +1,39 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');
+require('../js/analysis-contract.js');const c=require('../js/optimization-contract.js');
+const resume='工作经历\n2020-2022 星河公司 运营专员\n协助整理用户活动资料。\n2022-2024 蓝海公司 数据分析师\n使用 SQL 制作报表，报表覆盖 35 人。\n项目经历\n报表整理项目\n使用 SQL 整理 12 份报表。\n教育背景\n2016-2020 测试大学 本科';
+function draft(){return {jdSummary:'用户运营需要真实活动经验。',matchScore:70,matchedStrengths:['有活动资料整理经历'],gaps:['管理成果未提供'],importantKeywords:['活动','SQL'],optimizationSummary:[],optimizedProfile:c.fallback,optimizedSkills:[],optimizedExperiences:[{company:'星河公司',title:'运营专员',original:'协助整理用户活动资料。',optimized:'协助整理活动资料。',reason:'精简表述'}],optimizedProjects:[],missingEvidence:['如果有真实数据，可补充活动参与人数。'],suggestedQuestions:['是否具有真实 SQL 项目？'],fullOptimizedResume:'任意模型全文都不应直接采用'};}
+const run=(change,src=resume)=>{const r=draft();change(r);return c.safeguard(r,src);};
+function assertFallback(r,code){assert.equal(r.optimizedExperiences[0].optimized,r.optimizedExperiences[0].original);assert.ok(r.factChecks.issues.some(v=>v.code===code));assert.equal(r.factChecks.status,'needs_confirmation');}
+for(const [label,change,code]of [
+ ['借用其他公司数字',r=>r.optimizedExperiences[0].optimized='协助整理35份活动资料。','NUMBERS'],
+ ['扩大用户责任',r=>r.optimizedExperiences[0].optimized='负责整理用户活动资料。','RESPONSIBILITY'],
+ ['新增管理人数',r=>r.optimizedExperiences[0].optimized='带领五人团队整理活动资料。','NUMBERS'],
+ ['编造业务成果',r=>r.optimizedExperiences[0].optimized='协助整理活动资料，提升转化率35%。','NUMBERS'],
+ ['跨公司技能借用',r=>r.optimizedExperiences[0].optimized='协助使用 SQL 整理活动资料。','SKILL'],
+ ['借用其他公司身份',r=>{r.optimizedExperiences[0].company='蓝海公司';r.optimizedExperiences[0].title='数据分析师';},'IDENTITY'],
+ ['改变工作时间',r=>{r.optimizedExperiences[0].original='2020-2022 星河公司 运营专员\n协助整理用户活动资料。';r.optimizedExperiences[0].optimized='2022-2024 星河公司 运营专员\n协助整理活动资料。';},'NUMBERS'],
+ ['编造公司',r=>r.optimizedExperiences[0].company='虚构公司','IDENTITY'],
+ ['改变岗位',r=>r.optimizedExperiences[0].title='运营总监','IDENTITY'],
+ ['增加学历',r=>r.optimizedExperiences[0].optimized='协助整理活动资料，拥有博士学历。','EDUCATION'],
+ ['补充建议混入稿件',r=>r.optimizedExperiences[0].optimized='协助整理用户活动资料。如果有真实数据建议补充。','ADVICE'],
+ ['中文片段错误变英文',r=>r.optimizedExperiences[0].optimized='Assisted with preparation of user activity materials.','LANGUAGE'],
+ ['空泛责任包装',r=>r.optimizedExperiences[0].optimized='全面负责活动，赋能业务闭环，形成抓手。','RESPONSIBILITY'],
+ ['冗余关键词堆砌',r=>r.optimizedExperiences[0].optimized='活动活动活动活动。','KEYWORDS'],
+ ['新增中文技能',r=>{r.optimizedSkills=['数据挖掘'];r.optimizedExperiences[0].optimized='协助通过数据挖掘整理资料。';},'SKILL']
+])test(label,()=>{assertFallback(run(change),code);});
+test('数字单位和用途不能改变，35人不能变35份',()=>{const r=draft();r.optimizedExperiences=[{company:'蓝海公司',title:'数据分析师',original:'使用 SQL 制作报表，报表覆盖 35 人。',optimized:'使用 SQL 制作 35 份报表。',reason:'润色'}];assertFallback(c.safeguard(r,resume),'NUMBERS');});
+test('新增项目与学校只标记不使整体失败，全文保留原教育',()=>{const r=run(r=>{r.optimizedProjects=[{name:'虚构项目',original:'主导虚构项目',optimized:'成果35%',reason:'不实'}];r.optimizedProfile='虚构大学博士';});assert.equal(r.optimizedProjects.length,0);assert.match(r.fullOptimizedResume,/测试大学 本科/);assert.doesNotMatch(r.fullOptimizedResume,/虚构|博士/);assert.equal(r.factChecks.status,'needs_confirmation');});
+test('空白换行差异精确回映原文，卡片和全文相同；不混不同公司',()=>{const r=run(r=>{r.optimizedExperiences[0].original='协助整理 用户活动\n资料。';r.optimizedExperiences[0].optimized='协助整理活动资料。';});assert.equal(r.optimizedExperiences[0].original,'协助整理用户活动资料。');assert.ok(r.fullOptimizedResume.includes(r.optimizedExperiences[0].optimized));assert.match(r.fullOptimizedResume,/2022-2024 蓝海公司 数据分析师\n使用 SQL 制作报表，报表覆盖 35 人。/);});
+test('相同原文重复出现时按公司区分，不能唯一归属则不猜',()=>{const source=resume.replace('使用 SQL 制作报表，报表覆盖 35 人。','协助整理用户活动资料。');const r=c.safeguard(draft(),source);assert.equal(r.optimizedExperiences.length,1);assert.match(r.fullOptimizedResume,/星河公司 运营专员\n协助整理活动资料。/);assert.match(r.fullOptimizedResume,/蓝海公司 数据分析师\n协助整理用户活动资料。/);});
+test('重叠片段不重复应用，显示稿与卡片一致',()=>{const r=run(r=>{r.optimizedExperiences.push({...r.optimizedExperiences[0]});});assert.equal(r.optimizedExperiences.length,1);assert.ok(r.factChecks.issues.some(v=>v.code==='OVERLAP'));assert.ok(r.fullOptimizedResume.includes(r.optimizedExperiences[0].optimized));});
+test('已有项目保留名字/数字/位置，虚构项目不混入工作公司',()=>{const r=run(r=>{r.optimizedProjects=[{name:'报表整理项目',original:'报表整理项目\n使用 SQL 整理 12 份报表。',optimized:'报表整理项目\n使用 SQL 完成 12 份报表整理。',reason:'明确动作对象'}];});assert.equal(r.optimizedProjects.length,1);assert.ok(r.fullOptimizedResume.includes(r.optimizedProjects[0].optimized));assert.match(r.fullOptimizedResume,/蓝海公司 数据分析师/);assert.doesNotMatch(r.fullOptimizedResume,/建议补充|如果有|真实 SQL 项目/);});
+test('整个简历不超过原长1.2倍，长稿回退与卡片同步',()=>{const src='工作经历\n2021-2023 测试公司 运营专员\n整理用户活动资料。';const r=draft();r.optimizedExperiences=[{company:'测试公司',title:'运营专员',original:'整理用户活动资料。',optimized:'整理用户活动资料。'.repeat(20),reason:'冗长'}];r.optimizedProfile='整理用户活动资料。'.repeat(10);const out=c.safeguard(r,src);assert.ok(out.fullOptimizedResume.length<=Math.ceil(src.length*1.2));assert.equal(out.optimizedExperiences[0].optimized,'整理用户活动资料。');});
+test('英文简历普通动词不是不存在的技能，不强制改成中文',()=>{const src='Work Experience\n2021-2023 Test Company Data Analyst\nPrepared sales reports using SQL and Excel.\nEducation\nTest University Bachelor';const r=draft();r.optimizedSkills=['SQL','Excel'];r.optimizedExperiences=[{company:'Test Company',title:'Data Analyst',original:'Prepared sales reports using SQL and Excel.',optimized:'Used SQL and Excel to prepare sales reports.',reason:'明确动作'}];const out=c.safeguard(r,src);assert.ok(out.fullOptimizedResume.includes('Used SQL and Excel to prepare sales reports.'));assert.doesNotMatch(out.fullOptimizedResume,/个人简介|核心技能/);});
+test('事实检查输出仅使用固定代码，来源不明的消息不能注入页面',()=>{const value=c.readChecks({issues:[{code:'IDENTITY',section:'optimizedExperiences',index:0,message:'<script>private</script>'},{code:'unknown',section:'secret',index:0}]});assert.equal(value.issues.length,1);assert.doesNotMatch(JSON.stringify(value),/script|private|secret/);});
+
+test('同值人数不能包装为管理人数，同值百分比不能交换业务指标',()=>{let r=draft();r.optimizedExperiences=[{company:'蓝海公司',title:'数据分析师',original:'使用 SQL 制作报表，报表覆盖 35 人。',optimized:'管理 35 人，使用 SQL 制作报表。',reason:'扩大'}];assertFallback(c.safeguard(r,resume),'RESPONSIBILITY');const src='工作经历\n2021-2023 测试公司 运营专员\n转化率35%，留存率5%。';r=draft();r.optimizedExperiences=[{company:'测试公司',title:'运营专员',original:'转化率35%，留存率5%。',optimized:'转化率5%，留存率35%。',reason:'交换'}];assertFallback(c.safeguard(r,src),'NUMBERS');});
+
+test('否定和计划学习不当作已具备技能，不能将未掌握改成使用',()=>{for(const negative of ['未掌握 Python。','计划学习 Python。','没有 Python 经验。']){const src=resume+'\n'+negative;const r=run(r=>{r.optimizedSkills=['SQL','Python'];r.optimizedExperiences[0].optimized='协助使用 Python 整理活动资料。';},src);assert.ok(!r.optimizedSkills.includes('Python'));assertFallback(r,'SKILL');}const r=draft();r.optimizedSkills=['Python'];const out=c.safeguard(r,resume+'\nSkills\nNever used Python.');assert.ok(!out.optimizedSkills.includes('Python'));});
+test('事实核对、收起解释和完整稿提醒在正常页面可见，无额外请求',()=>{const app=require('node:fs').readFileSync(require('node:path').join(__dirname,'../js/app.js'),'utf8');assert.match(app,/建议确认真实性/);assert.match(app,/AI 仅基于你提供的真实经历进行改写。投递前请再次确认时间、数据、技能和项目描述准确无误。/);assert.match(app,/toggle-full-resume/);assert.match(app,/<details/);const provider=require('node:fs').readFileSync(require('node:path').join(__dirname,'../js/optimization-provider.js'),'utf8');assert.match(provider,/result.factChecks=contract.readChecks/);assert.equal((provider.match(/fetch\(/g)||[]).length,1);});
+
+test('优势说明不能把协助变负责，职位等级和未列技术不能偷偷加入',()=>{const r=run(r=>{r.matchedStrengths=['负责用户活动资料整理'];r.optimizedExperiences[0].optimized='担任运营总监，使用 SPSS 整理用户活动资料。';});assertFallback(r,'SKILL');assert.ok(r.factChecks.issues.some(v=>v.section==='matchedStrengths'));assert.match(r.matchedStrengths[0],/建议确认真实性/);assert.ok(!r.fullOptimizedResume.includes('总监'));});
