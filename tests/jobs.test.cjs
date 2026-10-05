@@ -13,9 +13,9 @@ test('10家独立公开源使用官方URL；三平台统一字段、真实链接
  const raw=board(sources[6]);raw.jobs[0].isListed=false;assert.equal(core.normalizeBoard(sources[6],raw).length,0);
 });
 
-test('城市/中英岗位筛选保留远程混合与China/APAC，排除Sales而非协作销售的分析师',()=>{
+test('城市/中英岗位筛选保留远程混合与China/APAC，排除销售岗位但保留Sales Analyst和协作销售的分析师',()=>{
  const base=job();const jobs=[base,{...base,id:'onsite',url:base.url+'?id=2',location:'New York',workMode:'现场办公'},{...base,id:'remote',url:base.url+'?id=3',location:'Remote US',workMode:'远程办公'},{...base,id:'sales',url:base.url+'?id=4',title:'Sales Analyst'},{...base,id:'wrong',url:base.url+'?id=5',title:'Frontend Engineer',description:'React'},{...base,id:'hybrid',url:base.url+'?id=6',location:'APAC Multiple locations',workMode:'混合办公'}];
- const result=core.shortlist(jobs,{role:'数据分析师',city:'上海',exclude:'不考虑销售'},analysis,10);assert.deepEqual(result.map(j=>j.id),[base.id,'hybrid','remote']);assert.ok(result[1].screeningNotes.some(s=>s.includes('签证')));
+ const result=core.shortlist(jobs,{role:'数据分析师',city:'上海',exclude:'不考虑销售'},analysis,10);assert.deepEqual(result.map(j=>j.id),[base.id,'hybrid','remote','sales']);assert.ok(result[1].screeningNotes.some(s=>s.includes('签证')));
  assert.equal(core.shortlist(jobs,{role:'不存在的岗位'},analysis).length,0);
 });
 
@@ -37,7 +37,7 @@ test('批量AI一次调用，复用Qwen严格JSON、非思考与服务端Key，�
  const {matchingInput,matchJobs,validateMatches}=await import('../ai/job-matching.mjs');const input=matchingInput({profile:{...analysis,candidateProfile:'数据分析师 邮箱 test@example.com'},preferences:{role:'数据分析师'},jobs:[job()]});assert.doesNotMatch(JSON.stringify(input.profile),/test@example/);
  let calls=0;const result=await matchJobs(input,env,async(url,opts)=>{calls++;assert.match(url,/compatible-mode\/v1\/chat\/completions$/);const body=JSON.parse(opts.body);assert.equal(body.model,'qwen3.8-flash');assert.equal(body.enable_thinking,false);assert.equal(body.response_format.type,'json_schema');assert.equal(body.response_format.json_schema.strict,true);assert.equal(body.response_format.json_schema.schema.properties.matches.items.additionalProperties,false);assert.equal(JSON.parse(body.messages[1].content).jobs.length,1);assert.match(body.messages[0].content,/不编造/);return new Response(JSON.stringify({choices:[{finish_reason:'stop',message:{content:JSON.stringify({matches:[match(job())]})}}]}));});assert.equal(calls,1);assert.equal(result.matches[0].matchScore,85);
  for(const invalid of [{...match(job()),id:'invented'},{...match(job()),matchScore:101}])assert.throws(()=>validateMatches({matches:[invalid]},[job()]),{code:'INVALID_SCHEMA'});
- assert.throws(()=>matchingInput({profile:analysis,jobs:Array(11).fill(job())}),{code:'BAD_REQUEST'});
+ assert.throws(()=>matchingInput({profile:analysis,jobs:Array(16).fill(job())}),{code:'BAD_REQUEST'});
  assert.throws(()=>matchingInput({profile:analysis,jobs:[{...job(),url:'https://evil.invalid'}]}),{code:'BAD_REQUEST'});
 });
 
@@ -62,5 +62,5 @@ test('公开代理使用Worker支持的manual重定向并保留流式压缩头',
 
 
 test('真实输入和JD只发一份批量请求；长JD明确截断，提示词禁止推断签证和不存在的技能',async()=>{
- const {MATCH_PROMPT,matchingInput}=await import('../ai/job-matching.mjs');const input=matchingInput({profile:analysis,jobs:[{...job(),description:'x'.repeat(8000)}]});assert.equal(input.jobs[0].description.length,6000);assert.equal(input.jobs[0].descriptionTruncated,true);assert.match(MATCH_PROMPT,/不得依据中文简历/);assert.match(MATCH_PROMPT,/仅当确有真实使用经历/);
+ const {MATCH_PROMPT,matchingInput}=await import('../ai/job-matching.mjs');const input=matchingInput({profile:analysis,jobs:[{...job(),description:'x'.repeat(8000)}]});assert.equal(input.jobs[0].description.length,1800);assert.equal(input.jobs[0].descriptionTruncated,true);assert.match(MATCH_PROMPT,/不得依据中文简历/);assert.match(MATCH_PROMPT,/仅当确有真实使用经历/);
 });

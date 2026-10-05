@@ -5,6 +5,9 @@ workers_dev = true
 keep_vars = true
 
 [vars]
+FREE_MODE = "true"
+WEBSEARCH_ENABLED = "false"
+# FREE_MODE blocks MCP until upstream free-only enforcement is verified.
 AI_MODEL = "qwen3.8-flash"
 # AI_BASE_URL is managed in the dashboard and preserved by keep_vars.
 # Never overwrite the user's configured workspace URL with an empty local value.

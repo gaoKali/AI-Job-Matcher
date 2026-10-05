@@ -22,3 +22,7 @@
 
 ## 当前第5步边界（覆盖历史暂停搜岗状态）
 用户已确认第4步成功，授权本轮公开岗位接入。10家固定公开源、普通JS筛选、Qwen一次最多10岗批量匹配已实现；不接收费源/爬虫，不做Agent，不部署Pages，不加数据库/登录。开发前Git检查点1d8c223，tag checkpoint-resume-ai-working。54项离线测试通过；真实一次10岗评分成功，另一次临时上游超时已有未评分提示，停止自动模型测试。后续参考docs/PUBLIC_JOBS.md，不重新配置任何已有Secret。
+
+
+## 第5步最新最终边界
+最新用户要求实时百炼WebSearch MCP三平台搜索，不继续固定国内公司库方案。参考docs/WEBSEARCH_MCP.md。FREE_MODE=true，WEBSEARCH_ENABLED=false；不确认上游免费保护时绝不执行MCP，也不虚构free_only参数。不得将FREE_MODE切为false规避用户零费用要求。开通待本人操作；不要求新Key、不读/改AI_API_KEY或AI_BASE_URL；不做Agent。

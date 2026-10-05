@@ -1,0 +1,121 @@
+{
+  "environment": "local Node (NOT Cloudflare)",
+  "corporate": {
+    "company": "神策数据",
+    "status": 200,
+    "jobCount": 62,
+    "exactRoleCityCount": 0,
+    "distinctTitleLocationCount": 57,
+    "sampleJobs": [
+      {
+        "title": "后端研发工程师-分布式查询引擎方向",
+        "company": "神策数据",
+        "location": "北京、武汉",
+        "salary": "未公开",
+        "experience": "未公开",
+        "education": "未公开",
+        "description": "工作职责： 1、负责大数据产品中查询引擎模块的开发与维护； 2、负责查询优化方案的设计和实现； 3、负责处理查询引擎方面的疑难问题； 4、提升产品整体的运行效率与稳定性。 岗位要求： 1、计算机或相关专业毕业，本科及以上学历，两年以上的 Hadoop 及相关生态的应用与开发经验； 2、熟练掌握 Linux 系统下的 C 语言和 Java 语言编程，有良好的代码习惯； 3、了解 MPP 架构，有 Impala/Hive/Spark 等计算系统底层执行引擎调优经验者优先； 4、对大数据方向感兴趣，乐于帮助客户实现数据驱动； 5、计算机基础知识扎实，对分布式系统具有浓厚兴趣； 6、对接触各种互联网产品感兴趣，乐于培养自身的产品意识； 7、快速学习能力，主动性强。",
+        "url": "https://www.sensorsdata.cn/about/joinus.html",
+        "source": "企业公开招聘官网",
+        "publishedAt": "未公开",
+        "sampleOnly": true
+      },
+      {
+        "title": "Java架构师（营销云）",
+        "company": "神策数据",
+        "location": "成都",
+        "salary": "未公开",
+        "experience": "未公开",
+        "education": "未公开",
+        "description": "工作职责： 1、负责神策产品后端的整体架构设计和核心模块的开发工作； 2、深入理解、挖掘业务需求，主导业务实现方案的设计并推动实施； 3、参与系统和平台发展方向规划，构建高可用系统架构； 4、团队内外的沟通与协作，推动业务迭代顺利、高效进行。 岗位要求： 1、计算机或相关专业毕业，本科及以上学历，6 年以上 Web 开发经验； 2、精通 Java 编程语言，熟练掌握 Java 多线程，具有丰富的高性能、高并发应用设计、开发经验，熟练掌握 Java 虚拟机原理及性能调优； 3、熟悉 Spring / MyBatis / Netty / Nginx 等 Web 开源技术和框架； 4、精通数据库设计（MySQL优先），优秀的SQL编写及调优能力，熟悉常见NoSQL存储，如 Redis / Kudu / Hbase 等； 5、掌握常用的架构设计方法与模式，能够独立解决问题，具有一定的业务模块或系统架构设计能力，能够负责重要业务模块的需求分析、方案设计及关键实现； 6、了解 Hadoop / Hive / Spark / Impala 等开源大数据技术优先； 7、善于学习新知识，主动性强； 8、良好的团队合作精神，较强的沟通能力，较好的团队间协同能力。",
+        "url": "https://www.sensorsdata.cn/about/joinus.html",
+        "source": "企业公开招聘官网",
+        "publishedAt": "未公开",
+        "sampleOnly": true
+      },
+      {
+        "title": "前端工程师（营销云）",
+        "company": "神策数据",
+        "location": "成都",
+        "salary": "未公开",
+        "experience": "未公开",
+        "education": "未公开",
+        "description": "工作职责： 1、负责神策智能运营业务的 Web 前端研发； 2、与产品、设计师一起，优化整个产品的使用流程； 3、负责前端前沿技术的探索与实践。 岗位要求： 1、熟练掌握 HTML/CSS/JavaScript 等前端基础技术； 2、能写出高质量的代码，有良好的代码风格、了解各种设计模式； 3、至少非常熟练使用 React、Vue、Angular 中的一种，掌握原理，熟悉周边生态； 4、10 万行代码在浏览器里运行，性能方面是个挑战，怎么分析、优化性能应该有一定的了解； 5、有很好的业务理解能力，有较好的产品思维，有较强的沟通协作能力； 6、有大数据行业经验、可视化相关经验优先。",
+        "url": "https://www.sensorsdata.cn/about/joinus.html",
+        "source": "企业公开招聘官网",
+        "publishedAt": "未公开",
+        "sampleOnly": true
+      }
+    ],
+    "note": "62为公开HTML条目，57为标题+地点组合；并非核实在招数量。示例字段未做完整抽取，任职要求仍在description内，不据此声称学历/年限未公开。"
+  },
+  "zhaopinDetail": {
+    "url": "https://www.zhaopin.com/jobdetail/CC892738830J41035769802.htm",
+    "status": 200,
+    "redirect": null,
+    "title": "学管班主任（用户运营专员）招聘_北京拓词智能科技有限公司招聘 - 智联招聘",
+    "textLength": 6141,
+    "hasJavaScript": true,
+    "challengePage": false,
+    "loginWall": false,
+    "captchaMention": false,
+    "jobLinks": 35,
+    "matchedJobs": [
+      {
+        "title": "用户运营岗-智采平台",
+        "url": "https://www.zhaopin.com/jobdetail/CC541193130J40883656009.htm",
+        "context": "节日福利 年度旅游 发展空间 用户运营岗-智采平台 2.1-3万 国才(北京)人力资源服务有限公司 本科 3-5年 电商类产品 平台类产品 B端用户 专项培训 <a",
+        "matchesRole": true,
+        "matchesCity": true
+      },
+      {
+        "title": "社群用户运营",
+        "url": "https://www.zhaopin.com/jobdetail/CC464994880J41002690802.htm",
+        "context": "an class=\"jobs-deliver__tag\" data-v-9e7bb530> 5-10年 会员体系搭建经验 社群用户运营 1-1.4万 北京慧宇智业教育科技有限公司 本科 1-3年 C端用户 会员体系 用户增长 社群运营 出差",
+        "matchesRole": true,
+        "matchesCity": true
+      },
+      {
+        "title": "用户运营/学管班主任",
+        "url": "https://www.zhaopin.com/jobdetail/CC892738830J40974131302.htm",
+        "context": "n> PR活动 主题活动 用户运营/学管班主任 9000-13000元 北京拓词智能科技有限公司 大专 1-3年 知识/教育平台 社群运营 五险一金 可接受残疾人",
+        "matchesRole": true,
+        "matchesCity": true
+      },
+      {
+        "title": "北京拓词智能科技有限公司用户运营招聘",
+        "url": "https://www.zhaopin.com/jobdetail/CC892738830J41035769802.htm",
+        "context": "&gt; 北京用户运营招聘 &gt; 北京拓词智能科技有限公司用户运营招聘 我要招人 &gt; 职位发布者 <div clas",
+        "matchesRole": true,
+        "matchesCity": true
+      }
+    ],
+    "examples": [
+      {
+        "title": "医药健康-用户体验",
+        "url": "https://www.zhaopin.com/jobdetail/CC383625320J40883277809.htm",
+        "context": "58CFQ222A\" target=\"_blank\" class=\"seo-card__view-all\"> 查看更多 医药健康-用户体验 面议 北京三快在线科技有限公司 本科 1-3年 获客活动岗(J14385) 面议 <a href=\"https://www.zhaopin.com/companydetail/CZ120104400.htm\"",
+        "matchesRole": false,
+        "matchesCity": true
+      },
+      {
+        "title": "获客活动岗(J14385)",
+        "url": "https://www.zhaopin.com/jobdetail/CC120104400J40930068008.htm",
+        "context": "er__tags\" data-v-9e7bb530> 本科 1-3年 获客活动岗(J14385) 面议 大家保险集团有限责任公司 本科 3-5年 C端用户 视频平台 社交平台 用研项目经验 会员体系搭建经验",
+        "matchesRole": false,
+        "matchesCity": false
+      },
+      {
+        "title": "私域运营专家",
+        "url": "https://www.zhaopin.com/jobdetail/CC524472920J40944208808.htm",
+        "context": "区平台 搜索引擎/平台 资讯平台 私域运营专家 1-1.5万 良心网文化传播有限公司 本科 3-5年 C端用户 用户增长 目标奖励 五险一金 定期培训",
+        "matchesRole": false,
+        "matchesCity": false
+      }
+    ],
+    "officialCareerLinks": [],
+    "roleMentions": 14,
+    "cityMentions": 58,
+    "preview": "学管班主任（用户运营专员）招聘_北京拓词智能科技有限公司招聘 - 智联招聘 首页 职位 城市频道 AI求职 找副业 政企 校招 高薪 海归 驻外 测评 职Q 我要招人 登录/注册 学管班主任（用户运营专员） 收藏 举报 **-**元 北京 大兴区 5-10年 大专 招10人 立即投递 暂无内容 已向对方发送简历和打招呼语 留在此页 继续沟通 职位描述 C端用户 社群运营 已经付费用户维护 课外培训与资格考试 互联网教育 【岗位职责】 1. 家长报名拓词会员后，用电话及时联系家长，协助家长制定学习计划； 2. 在会员有效期内，随时关注孩子的使用情况，及时解决家长的问题； 3. 会员到期前，提醒家长续报。 【任职资格】 1. 2021~2025年统招统招大专以上学历，有3个月以上实际工作经验； 2. 经过培训能够通过电话和家长进行沟通，及时帮助家长解决问题； 3. 沟通表达能力强，有较强的逻辑思维能力和理解力，有较强责任心强和执行力； 4. 有教育行业经验或热爱教育事业者优先。 【带薪培训】 此岗位看重的是潜力而非经验，前期有为期半个月的新员工从零开始的带薪培训，后期有业务组长耐心培养。 【清晰的晋升路线】 公司业务处于快速发展期，拥有清晰的晋升路线：规划老师 -&gt;组长 -&gt;区负责人 -&gt; 部门负责人。 【工作及休息】 1.每周为双休：每周二至周日排休两天。 2.每日"
+  }
+}

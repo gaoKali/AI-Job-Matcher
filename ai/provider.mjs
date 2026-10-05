@@ -39,7 +39,7 @@ export async function requestStructured(task, env, fetcher = fetch, timeoutMs = 
   }
   // Fallback only for Beijing workspace domains, never other regions/providers
   // or a primary URL already using the shared host.
-  const canFallback = /\.cn-beijing\.maas\.aliyuncs\.com$/.test(base.hostname);
+  const canFallback = task.allowNetworkFallback !== false && /\.cn-beijing\.maas\.aliyuncs\.com$/.test(base.hostname);
   const targets = [{ name: 'primary', base }, ...(canFallback ? [{ name: 'fallback', base: new URL(BEIJING_FALLBACK) }] : [])];
   const deadline = Date.now() + timeoutMs;
   for (let index = 0; index < targets.length; index++) {
