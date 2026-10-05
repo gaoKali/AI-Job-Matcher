@@ -7,6 +7,7 @@ const allowed = new Map([
   ['/js/app.js', 'text/javascript; charset=utf-8'], ['/js/providers.js', 'text/javascript; charset=utf-8'],
   ['/js/parser-core.js', 'text/javascript; charset=utf-8'], ['/js/resume-parser.js', 'text/javascript; charset=utf-8'], ['/js/resume-worker.js', 'text/javascript; charset=utf-8'],
   ['/js/analysis-contract.js', 'text/javascript; charset=utf-8'], ['/js/analysis-config.js', 'text/javascript; charset=utf-8'], ['/js/analysis-provider.js', 'text/javascript; charset=utf-8'],
+  ...['job-sources.js','job-core.js','jobs-provider.js'].map(f=>['/js/'+f,'text/javascript; charset=utf-8']),
   ['/assets/favicon.svg', 'image/svg+xml']
 ]);
 const port = Number(process.env.PORT || 4173);

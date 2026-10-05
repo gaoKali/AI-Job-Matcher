@@ -129,3 +129,5 @@ tests/preview-ai-stub.cjs仅显式启动端口4174，合成样本和测试字符
 JSON.parse后先normalizeAnalysisResult再validate：数字年限和推荐程度转为“年”和“%”字符串，单个字符串列表包装为数组，缺失/null字符串填“简历中未提供足够信息”，缺失/null列表为空数组；兼容旧字符串数组摘要和依据仅连接原有文本。仅选取已知字段，不修改原对象、不补写经历技能成果，无法安全转换的对象/布尔等仍INVALID_SCHEMA。页面对所有结果继续HTML转义；原有模拟岗位及显式开发demo模式保留。
 
 45项离线测试通过，包含归一化、Schema一致性、缺失信息、非法类型、真实模式200响应、单次模拟模型请求、日志隐私及原功能回归。未调用线上Qwen。最终部署现有ai-job-matcher-api成功，版本33e24a5e-6b5c-43fc-b056-bcfae0c6f8cc；keep_vars保留远端AI_API_KEY及AI_BASE_URL，未修改Cloudflare配置文件/环境变量、模型、网络兜底或岗位搜索。本地预览已就绪，等待用户刷新原网页，用同一简历测试一次。
+## 第5步完成（2026-10-05）
+正式项目检查点：1d8c223，tag checkpoint-resume-ai-working。10家Greenhouse/Lever/Ashby公开源接入；真实岗位经普通JS筛选后一次最多10岗Qwen批量匹配，复用原API配置。54项离线测试通过。浏览器真实10岗评分成功一次，原始Stripe招聘页可打开；另一次上游临时超时已保留未评分真实岗位，停止继续AI调用。公开源最终读到3871岗，手机390px单列无横向溢出。最终现有Worker部署版本a646e95a-ad84-48e0-b4a8-97645d34623b，keep_vars保留Secret和Base URL；本地预览已提供最新脚本。详见PUBLIC_JOBS.md。本轮没有Agent、Pages、数据库、登录或仓库推送。

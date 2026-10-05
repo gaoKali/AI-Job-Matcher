@@ -16,6 +16,9 @@ function diagnostic(attempt, host, status, errorType, requestId) {
 }
 // Shared compatible adapter: other providers never send their key to DashScope.
 export async function analyzeResume(text, env, fetcher = fetch, timeoutMs = 55000) {
+  return requestStructured({systemPrompt:SYSTEM_PROMPT,input:{currentDate:new Date().toISOString().slice(0,10),resumeText:text},schema:contract.schema,name:'resume_analysis',validate:result=>contract.validate(contract.normalizeAnalysisResult(result))},env,fetcher,timeoutMs);
+}
+export async function requestStructured(task, env, fetcher = fetch, timeoutMs = 55000) {
   const key = env.AI_API_KEY;
   if (!key || !String(key).trim() || /[\r\n\u0000]/.test(String(key))) throw contract.failure('NOT_CONFIGURED');
   const configuredBase = String(env.AI_BASE_URL || '').trim();
@@ -27,8 +30,8 @@ export async function analyzeResume(text, env, fetcher = fetch, timeoutMs = 5500
   if (base.hostname.endsWith('.maas.aliyuncs.com') && base.pathname === '/') base.pathname = '/compatible-mode/v1';
   const model = env.AI_MODEL || 'qwen3.8-flash';
   const body = {
-    model, messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: JSON.stringify({ currentDate: new Date().toISOString().slice(0,10), resumeText: text }) }],
-    response_format: { type: 'json_schema', json_schema: { name: 'resume_analysis', strict: true, schema: contract.schema } }, temperature: 0.2, max_tokens: 4000, stream: false
+    model, messages: [{ role: 'system', content: task.systemPrompt }, { role: 'user', content: JSON.stringify(task.input) }],
+    response_format: { type: 'json_schema', json_schema: { name: task.name, strict: true, schema: task.schema } }, temperature: 0.2, max_tokens: task.maxTokens || 4000, stream: false
   };
   const isBailian = /(?:^|\.)aliyuncs\.com$/.test(base.hostname);
   if (isBailian || env.AI_DISABLE_THINKING === 'true') {
@@ -88,7 +91,7 @@ export async function analyzeResume(text, env, fetcher = fetch, timeoutMs = 5500
       try { result = JSON.parse(rawContent); resultMeta.jsonParseSucceeded = true; }
       catch { throw contract.failure('INVALID_JSON'); }
       if (choice.finish_reason !== 'stop') throw contract.schemaFailure();
-      const analysis = contract.validate(contract.normalizeAnalysisResult(result));
+      const analysis = task.validate(result);
       logResult();
       diagnostic(target.name, target.base.hostname, status, null, requestId);
       return analysis;

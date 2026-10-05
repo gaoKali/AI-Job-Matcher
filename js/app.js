@@ -48,6 +48,9 @@
   function clearExtracted() {
     state.generation++;
     state.aiAbort?.abort();
+    state.jobAbort?.abort();
+    state.jobAbort = null;
+    $('jobs-loading').hidden = true;
     state.aiAbort = null;
     stopLoading();
     state.readAbort?.abort();
@@ -191,25 +194,29 @@
       <article class="card directions-card"><h3>推荐求职方向</h3><p class="inline-note">根据经历推断的方向；推荐程度表示证据充分度，不是录用概率。</p><div class="directions">${profile.recommendedDirections.map(d => `<div class="direction"><strong>${escape(d.title)}</strong><span class="chip">${escape(confidence[d.confidence] || d.confidence)}</span><p>${escape(d.reason)}</p><details><summary>查看判断依据</summary><p>${escape(d.evidence)}</p></details><button type="button" class="text-button choose-direction" data-role="${escape(d.title)}">用作目标岗位 →</button></div>`).join('') || '<p>当前信息不足，暂不能推荐可靠方向。</p>'}</div></article>`;
   }
   function renderPreferences() {
-    const labels = { role: '目标岗位', city: '城市', industry: '行业', workMode: '工作方式', level: '级别', mustHave: '必须满足（待解读）', exclude: '不考虑（待解读）' };
+    const labels = { role: '目标岗位', city: '城市', industry: '行业', workMode: '工作方式', level: '级别', mustHave: '必须满足', exclude: '不考虑' };
     const entries = Object.entries(state.preferences).filter(([, value]) => value);
-    $('selected-preferences').innerHTML = entries.length ? entries.map(([key, value]) => `<span class="chip">${labels[key]}：${escape(value)}</span>`).join('') : '<span class="chip">暂不限制求职条件 · 浏览全部示例岗位</span>';
+    $('selected-preferences').innerHTML = entries.length ? entries.map(([key, value]) => `<span class="chip">${labels[key]}：${escape(value)}</span>`).join('') : '<span class="chip">暂不限制求职条件 · 根据简历筛选公开岗位</span>';
+  }
+  function prepareJobFilters() {
+    for (const [id,key,label] of [['filter-company','company','全部公司'],['filter-city','location','全部城市'],['filter-source','source','全部来源']]) {
+      $(id).innerHTML='<option value="">'+label+'</option>'+[...new Set(state.jobs.map(j=>j[key]))].sort().map(v=>'<option value="'+escape(v)+'">'+escape(v)+'</option>').join('');
+    }
   }
   function renderJobs() {
-    const minimum = Number($('min-score').value);
-    const visible = providers.filterJobs(state.jobs, minimum, $('sort-order').value);
-    $('score-value').value = minimum + ' 分';
-    $('results-count').textContent = `${visible.length} 个模拟岗位 / 共 ${state.jobs.length} 个`;
-    $('empty-results').hidden = visible.length !== 0;
-    $('job-list').innerHTML = visible.map(job => `<article class="card job-card"><div class="job-top"><div><div class="company-icon" aria-hidden="true">${escape(job.company.slice(0, 1))}</div><h3>${escape(job.title)}</h3><p class="company-name">${escape(job.company)}（虚构）</p></div><div class="score ${job.score < 80 ? 'medium' : ''}"><strong>${job.score}</strong><span>模拟匹配分</span></div></div><div class="job-meta">${[job.city, job.industry, job.workMode, job.level].map(value => `<span>${escape(value)}</span>`).join('')}</div><div class="job-reasons"><div class="reason-row"><span class="reason-icon" aria-hidden="true">✓</span><div><strong>为什么匹配</strong><p>${job.reasons.map(escape).join(' ')}</p></div></div><div class="reason-row"><span class="reason-icon gap" aria-hidden="true">△</span><div><strong>主要差距</strong><p>${job.gaps.map(escape).join(' ')}</p></div></div></div><div class="job-footer"><span class="job-source">来源：${escape(job.source)}</span><button type="button" class="button secondary view-job" data-job-id="${escape(job.id)}" aria-label="查看岗位：${escape(job.title)}，${escape(job.company)}">查看岗位 ↗</button></div></article>`).join('');
-    announce(`显示 ${visible.length} 个模拟岗位，最低匹配分 ${minimum} 分。`);
+    const minimum=Number($('min-score').value);
+    const visible=window.JobCore.filter(state.jobs,{minimum,order:$('sort-order').value,company:$('filter-company').value,city:$('filter-city').value,source:$('filter-source').value});
+    $('score-value').value=minimum+' 分';
+    $('results-count').textContent=visible.length+' 个真实岗位 / 共 '+state.jobs.length+' 个候选';
+    $('empty-results').hidden=visible.length!==0;
+    $('job-list').innerHTML=visible.map(job=>{
+      const scored=Number.isFinite(job.matchScore),url=window.JobCore.safeUrl(job.url);
+      const row=(title,values)=>'<div class="reason-row"><span class="reason-icon" aria-hidden="true">'+(title==='主要差距'?'△':'✓')+'</span><div><strong>'+title+'</strong><p>'+values.map(escape).join(' ')+'</p></div></div>';
+      return '<article class="card job-card"><div class="job-top"><div><div class="company-icon" aria-hidden="true">'+escape(job.company.slice(0,1))+'</div><h3>'+escape(job.title)+'</h3><p class="company-name">'+escape(job.company)+'</p></div><div class="score '+(scored&&job.matchScore<80?'medium':'')+'"><strong>'+(scored?job.matchScore:'—')+'</strong><span>'+(scored?'AI匹配分':'暂未评分')+'</span></div></div><div class="job-meta"><span>'+escape(job.location)+'</span><span>'+escape(job.workMode)+'</span><span>'+escape(job.source)+'</span></div><div class="job-reasons">'+row('匹配原因',job.matchReasons.length?job.matchReasons:['尚未取得AI匹配结果，请核对原始JD。'])+row('主要差距',job.gaps.length?job.gaps:['暂未识别具体差距，请结合JD核实。'])+row('申请建议',[job.recommendation])+ (job.resumeTips.length?row('简历重点',job.resumeTips)+'<p class="inline-note">仅在有真实经历时补充；不要填写未掌握的技能、虚构项目或成果。</p>':'')+'</div><details class="job-description"><summary>查看 JD 摘要</summary><p>'+escape(job.description||'公开接口未提供详细JD，请查看原始岗位。')+'</p></details><div class="job-footer"><span class="job-source">来源：'+escape(job.source)+(job.publishedAt?' · '+escape(job.publishedAt.slice(0,10)):' · 发布日期未提供')+'</span>'+(url?'<a class="button secondary" href="'+escape(url)+'" target="_blank" rel="noopener noreferrer">查看真实岗位 ↗</a>':'<span>申请链接暂不可用</span>')+'</div></article>';
+    }).join('');
+    announce('显示 '+visible.length+' 个真实岗位，最低匹配分 '+minimum+' 分。');
   }
-  function showJob(id) {
-    const job = state.jobs.find(item => item.id === id);
-    if (!job) return;
-    $('job-detail').innerHTML = `<h2 id="dialog-title">${escape(job.title)}</h2><p class="detail-company">${escape(job.company)}（虚构） · ${escape(job.city)} · ${escape(job.workMode)} · ${escape(job.level)}</p><div class="chips"><span class="chip">${escape(job.industry)}</span><span class="chip">模拟匹配分 ${job.score} / 100</span></div><h3>岗位职责（示例）</h3>${list(job.responsibilities)}<h3>岗位要求（示例）</h3>${list(job.requirements)}<h3>匹配原因</h3>${list(job.reasons)}<h3>主要差距</h3>${list(job.gaps)}<h3>岗位来源</h3><p>${escape(job.source)}；不是公开招聘结果。</p>`;
-    $('job-dialog').showModal();
-  }
+  function showJob() {} // Original dialog retained; real cards link directly to employers.
   $('file-method').addEventListener('click', () => setMethod('file'));
   $('text-method').addEventListener('click', () => { setMethod('text'); $('resume-text').focus(); });
   $('resume-file').addEventListener('change', event => { if (event.target.files[0]) selectFile(event.target.files[0]); });
@@ -278,21 +285,27 @@
     $('search-button').disabled = true;
     $('search-error').hidden = true;
     try {
-      const jobs = await providers.jobProvider.search(preferences);
+      const controller=new AbortController();state.jobAbort=controller;
+      $('jobs-loading').hidden=false;$('search-button').textContent='正在搜索与匹配……';
+      const result = await providers.jobProvider.search(preferences,state.profile,{signal:controller.signal,onProgress:message=>{if(generation===state.generation)$('jobs-loading-text').textContent=message;}});
+      const jobs=result.jobs;
       if (generation !== state.generation) return;
       state.preferences = preferences;
       state.jobs = jobs;
       $('min-score').value = '0';
       $('sort-order').value = 'desc';
-      renderPreferences();
+      $('jobs-warnings').textContent=result.warnings.join(' ');$('jobs-warnings').hidden=!result.warnings.length;
+      $('jobs-summary').textContent='本次读取 '+result.total+' 个公开职位，筛选并匹配最多10个相关岗位。';
+      prepareJobFilters();renderPreferences();
       renderJobs();
       showStep(3);
-    } catch { displayError('search-error', '暂时无法展示岗位，请重试。'); }
-    finally { if (generation === state.generation) { state.busy = false; $('search-button').disabled = false; } }
+    } catch(error) { if(generation===state.generation&&error.code!=='CANCELLED')displayError('search-error','公开岗位搜索暂时失败，请稍后重试。'); }
+    finally { if (generation === state.generation) { state.busy = false; state.jobAbort=null; $('jobs-loading').hidden=true; $('search-button').textContent='搜索匹配岗位 →'; $('search-button').disabled = false; } }
   });
   $('sort-order').addEventListener('change', renderJobs);
   $('min-score').addEventListener('input', renderJobs);
-  $('clear-filter').addEventListener('click', () => { $('min-score').value = '0'; renderJobs(); });
+  $('clear-filter').addEventListener('click', () => { $('min-score').value = '0'; for(const id of ['filter-company','filter-city','filter-source'])$(id).value=''; renderJobs(); });
+  for(const id of ['filter-company','filter-city','filter-source'])$(id).addEventListener('change',renderJobs);
   $('job-list').addEventListener('click', event => { const button = event.target.closest('.view-job'); if (button) showJob(button.dataset.jobId); });
   $('close-dialog').addEventListener('click', () => $('job-dialog').close());
   $('dialog-done').addEventListener('click', () => $('job-dialog').close());
@@ -320,5 +333,5 @@
       } finally { checkButton.disabled = false; if (!state.busy) $('analyze-button').disabled = false; }
     });
   }
-  $('analysis-mode').textContent = providers.analysisMode === 'demo' ? '开发演示 · 不调用 AI' : 'AI 简历分析 · 岗位演示';
+  $('analysis-mode').textContent = providers.analysisMode === 'demo' ? '开发演示 · 不调用 AI' : 'AI 简历分析 · 真实岗位';
 })();

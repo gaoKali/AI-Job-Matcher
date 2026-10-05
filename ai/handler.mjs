@@ -4,15 +4,15 @@ const contract = globalThis.AnalysisContract;
 const entries = new Map();
 const MAX_BYTES = 60000;
 export function resetLimitsForTests() { entries.clear(); }
-function permit(identity) {
+export function permit(identity) {
   const now = Date.now();
   for (const [key, value] of entries) if (now - value.start >= 60000) entries.delete(key);
   const value = entries.get(identity) || { start: now, count: 0 };
   if (value.count >= 2 || entries.size >= 2000) return false;
   value.count++; entries.set(identity, value); return true;
 }
-export async function readLimited(request) {
-  if (Number(request.headers.get('content-length')) > MAX_BYTES) throw contract.failure('INPUT_TOO_LONG');
+export async function readLimited(request, maxBytes = MAX_BYTES) {
+  if (Number(request.headers.get('content-length')) > maxBytes) throw contract.failure('INPUT_TOO_LONG');
   const reader = request.body?.getReader();
   if (!reader) throw contract.failure('BAD_REQUEST');
   const parts = []; let size = 0;

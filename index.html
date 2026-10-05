@@ -13,19 +13,22 @@
   <script src="js/analysis-contract.js" defer></script>
   <script src="js/analysis-config.js" defer></script>
   <script src="js/analysis-provider.js" defer></script>
+  <script src="js/job-sources.js" defer></script>
+  <script src="js/job-core.js" defer></script>
+  <script src="js/jobs-provider.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
   <header class="site-header"><div class="header-inner">
     <a class="brand" href="index.html" aria-label="向前，返回首页"><span class="brand-mark" aria-hidden="true">↗</span><span>向前<span class="brand-sub">JOB MATCHER</span></span></a>
-    <span class="mode-badge"><span class="status-dot"></span><span id="analysis-mode">AI 简历分析 · 岗位演示</span></span>
+    <span class="mode-badge"><span class="status-dot"></span><span id="analysis-mode">AI 简历分析 · 真实岗位</span></span>
   </div></header>
   <main class="page-shell">
     <section class="hero" aria-labelledby="hero-title">
       <div><p class="eyebrow">你的下一步，从了解自己开始</p><h1 id="hero-title">看清你的优势，<br>找到适合的下一站<span class="accent">。</span></h1><p class="hero-description">从一份简历出发，梳理职业方向，<br class="desktop-break">让每一次求职选择都有依据。</p></div>
-      <div class="hero-note"><div class="note-icon" aria-hidden="true">✦</div><p class="eyebrow">一条更清晰的求职路径</p><p class="note-title">认识自己 → 明确目标 → 发现机会</p><p>不用重复整理材料。沿着三个步骤，体验从简历到岗位的完整流程。</p><span class="note-foot">简历由 AI 分析；岗位暂为模拟数据</span></div>
+      <div class="hero-note"><div class="note-icon" aria-hidden="true">✦</div><p class="eyebrow">一条更清晰的求职路径</p><p class="note-title">认识自己 → 明确目标 → 发现机会</p><p>不用重复整理材料。沿着三个步骤，体验从简历到岗位的完整流程。</p><span class="note-foot">简历由 AI 分析；岗位来自公司公开招聘源</span></div>
     </section>
-    <div class="privacy-banner"><span class="privacy-icon" aria-hidden="true">✓</span><div><strong>简历仅用于本次分析，不在本站永久存储。</strong><span>点击分析后，简历文本会发送给 AI 服务处理；原始文件不上传。请先移除不愿分享的信息。本站内存数据可通过刷新或重新上传清除。</span></div></div>
+    <div class="privacy-banner"><span class="privacy-icon" aria-hidden="true">✓</span><div><strong>简历仅用于本次分析，不在本站永久存储。</strong><span>分析与匹配时，简历文本或分析摘要会发送给 AI 服务处理；原始文件不上传，也不向招聘网站发送简历。请先移除不愿分享的信息。本站内存数据可通过刷新或重新上传清除。</span></div></div>
     <nav class="steps" aria-label="求职流程">
       <button type="button" class="step active" data-step="1" aria-current="step"><span class="step-number">01</span><span><strong>准备简历</strong><small>上传文件或粘贴文本</small></span></button>
       <button type="button" class="step" data-step="2" disabled><span class="step-number">02</span><span><strong>了解你的优势</strong><small>查看分析，填写求职需求</small></span></button>
@@ -72,11 +75,12 @@
           <div class="field"><label for="target-industry">目标行业</label><input id="target-industry" name="industry" maxlength="80" placeholder="例如：互联网、企业服务"></div>
           <div class="field"><label for="work-mode">工作方式</label><select id="work-mode" name="workMode"><option value="">不限</option><option>现场办公</option><option>混合办公</option><option>远程办公</option></select></div>
           <div class="field"><label for="job-level">期望岗位级别</label><select id="job-level" name="level"><option value="">不限</option><option>初级</option><option>中级</option><option>高级</option><option>管理岗</option></select></div>
-          <div class="field field-hint"><span class="small-dot"></span><p>条件越明确，越容易看清取舍。<br>模拟版仅演示匹配变化，不代表真实判断。</p></div>
+          <div class="field field-hint"><span class="small-dot"></span><p>条件越明确，越容易看清取舍。<br>公开源以国际科技公司为主；中国本地岗位覆盖有限。</p></div>
           <div class="field"><label for="must-have">必须满足的条件</label><textarea id="must-have" name="mustHave" rows="3" maxlength="500" placeholder="例如：双休、五险一金、无需出差"></textarea></div>
           <div class="field"><label for="exclude">不考虑的条件</label><textarea id="exclude" name="exclude" rows="3" maxlength="500" placeholder="例如：外包、频繁出差、夜班"></textarea></div>
         </div>
-        <p class="inline-note">模拟版会展示所有示例岗位，并按已选岗位、城市、行业、工作方式和级别演示评分变化。“必须满足”和“不考虑”的自由文本会保留展示，尚不自动解读或执行筛除。</p>
+        <p class="inline-note">从 10 家公司的公开源读取职位，先按关键词和城市筛选，再一次批量匹配最多 10 个岗位。中英文常见岗位关键词可关联；远程不代表全球可工作，地区与必须条件请核对 JD。</p>
+        <div id="jobs-loading" class="read-status" role="status" aria-live="polite" hidden><strong id="jobs-loading-text">正在读取公开岗位……</strong><span>先筛选，再一次批量匹配。无需重复点击。</span></div>
         <p id="search-error" class="error-message" role="alert" hidden></p>
         <div class="form-actions"><span class="subtle">先看机会，再调整方向。</span><button class="button primary" id="search-button" type="submit">搜索匹配岗位 <span aria-hidden="true">→</span></button></div>
       </form>
@@ -84,15 +88,16 @@
 
     <section id="step-3" class="step-panel" aria-labelledby="results-title" hidden>
       <div class="section-heading"><div><p class="eyebrow">STEP 03 · 发现机会</p><h2 id="results-title" tabindex="-1">看看你的下一站，有哪些可能</h2><p>把匹配原因和能力差距放在一起，做更有依据的选择。</p></div><div class="heading-actions"><button type="button" class="button secondary" id="search-again">重新搜索</button><button type="button" class="text-button reset-resume">重新上传简历</button></div></div>
-      <div class="demo-notice"><strong>模拟岗位 · 公司、岗位与分数均为虚构示例，不可用于真实申请。</strong><span>分数仅用于交互演示，不表示录用概率；“查看岗位”打开本地示例详情。</span></div>
+      <div class="demo-notice"><strong>真实公开岗位 · Greenhouse / Lever / Ashby</strong><span>匹配分基于简历与 JD，不表示录用概率。岗位会变化，请以招聘公司原始页面为准。未取得 AI 结果的岗位明确标为暂未评分。</span></div><p id="jobs-summary" class="inline-note"></p><div id="jobs-warnings" class="read-status" role="status" hidden></div>
       <div id="selected-preferences" class="selected-preferences"></div>
       <div class="results-toolbar"><div><strong id="results-count"></strong><span class="subtle"> · 发现适合的，也看清不适合的</span></div><div class="result-controls"><label for="sort-order">排序<select id="sort-order"><option value="desc">匹配分从高到低</option><option value="asc">匹配分从低到高</option></select></label><label for="min-score">最低匹配分 <output id="score-value" for="min-score">0 分</output><input type="range" id="min-score" min="0" max="100" step="5" value="0"></label></div></div>
+      <div class="job-filters"><label for="filter-company">公司<select id="filter-company"><option value="">全部公司</option></select></label><label for="filter-city">城市 / 地区<select id="filter-city"><option value="">全部城市</option></select></label><label for="filter-source">岗位来源<select id="filter-source"><option value="">全部来源</option></select></label></div>
       <div id="job-list" class="job-list"></div>
-      <div id="empty-results" class="card empty-state" hidden><span aria-hidden="true">⌕</span><h3>当前分数范围内，没有示例岗位</h3><p>降低最低匹配分，或重新调整求职需求。</p><button type="button" class="button secondary" id="clear-filter">清除分数筛选</button></div>
+      <div id="empty-results" class="card empty-state" hidden><span aria-hidden="true">⌕</span><h3>暂时没有找到符合条件的公开岗位</h3><p>可以尝试放宽城市或岗位关键词，或清除筛选。</p><button type="button" class="button secondary" id="clear-filter">清除筛选</button></div>
     </section>
     <p id="live-status" class="sr-only" role="status" aria-live="polite"></p>
-    <footer class="site-footer"><span class="footer-brand">向前 <span>每一次选择，都离目标更近一点。</span></span><span>本站不永久保存简历 · AI 处理文本 · 岗位演示</span></footer>
+    <footer class="site-footer"><span class="footer-brand">向前 <span>每一次选择，都离目标更近一点。</span></span><span>本站不永久保存简历 · AI 处理文本 · 真实公开岗位</span></footer>
   </main>
-  <dialog id="job-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span class="mode-badge">模拟岗位详情</span><button type="button" class="icon-button" id="close-dialog" aria-label="关闭岗位详情">×</button></div><div id="job-detail"></div><div class="dialog-footer"><p>这是虚构的岗位示例，没有真实申请链接。</p><button type="button" class="button primary" id="dialog-done">了解了</button></div></dialog>
+  <dialog id="job-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span class="mode-badge">公开岗位详情</span><button type="button" class="icon-button" id="close-dialog" aria-label="关闭岗位详情">×</button></div><div id="job-detail"></div><div class="dialog-footer"><p>请以原始招聘页面为准；已下线岗位可重新搜索。</p><button type="button" class="button primary" id="dialog-done">了解了</button></div></dialog>
 </body>
 </html>
