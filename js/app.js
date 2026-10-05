@@ -52,6 +52,7 @@
     state.optimizeAbort = null;
     stopOptimizationLoading();
     state.optimization = null;
+    window.ResumeReport.clear();
     $('optimization-results').replaceChildren();
     $('optimization-results').hidden = true;
     $('optimization-error').hidden = true;
@@ -274,7 +275,10 @@
       return '<section class="rewrite-item"><h4>'+escape(name)+'</h4>'+(flagged?'<p class="fact-badge">建议确认真实性 · 未确认的改写已保留原文</p>':'')+'<div class="rewrite-grid"><div class="original-copy"><span class="overline">原文</span><p>'+escape(item.original)+'</p></div><div class="optimized-copy"><span class="overline">优化后</span><p>'+escape(item.optimized)+'</p></div></div><details class="quality-details rewrite-reason"><summary>为什么这么改</summary><p>'+escape(item.reason)+'</p></details></section>';
     }).join('')+'</article>':'';
     const factDetails=checks.issues.length?'<article class="card optimization-card evidence-card"><h3>建议确认真实性</h3><p>基础核对发现 '+checks.issues.length+' 处待确认内容，已保留原文或撤回不确定的改写，其余结果可正常查看。</p><details class="quality-details"><summary>展开事实核对说明</summary>'+items(checks.issues.map(v=>v.message))+'</details></article>':'';
+    window.ResumeReport.set(result,role);
     $('optimization-results').innerHTML=
+      '<div class="report-actions"><div><strong>保存这份优化报告</strong><p class="subtle">打开打印窗口后选择“另存为 PDF”或“Microsoft Print to PDF”。仅在本机生成，不新增 AI 请求。</p></div><button type="button" class="button primary download-pdf-report">下载 PDF 报告</button></div><p id="pdf-report-status" class="inline-note" role="status" hidden></p>'+
+
       '<article class="card optimization-card"><div class="optimization-overview"><div><p class="eyebrow">岗位匹配概览</p><h3>'+escape(role)+'</h3><p>'+escape(result.jdSummary)+'</p></div><div class="score"><strong>'+escape(result.matchScore)+'</strong><span>原始简历匹配度 / 100</span></div></div><p class="inline-note">评分反映本次 JD 与已有经历的证据匹配，不是录用概率。缺少描述不等于缺少能力。</p><div class="analysis-grid"><div><h4>最相关的优势</h4>'+priority(result.matchedStrengths)+'</div><div><h4>最需要补充的差距</h4>'+priority(result.gaps)+'</div></div>'+fold('查看 JD 关键词','<div class="chips">'+result.importantKeywords.map(s=>'<span class="chip">'+escape(s)+'</span>').join('')+'</div>')+'</article>'+
       factDetails+compare('工作经历优化',result.optimizedExperiences,'optimizedExperiences')+compare('项目经历优化',result.optimizedProjects,'optimizedProjects')+
       '<article class="card optimization-card"><div class="section-heading compact"><div><h3>完整优化版简历</h3><p>与上面的经历改写使用同一份内容，补充建议不会写入正文。</p></div><button type="button" class="button primary" id="copy-resume">复制优化简历</button></div><p class="submission-note">AI 仅基于你提供的真实经历进行改写。投递前请再次确认时间、数据、技能和项目描述准确无误。</p><pre class="full-resume" id="optimized-resume-text"></pre><button type="button" class="text-button" id="toggle-full-resume" aria-expanded="false" aria-controls="optimized-resume-text">展开全文</button><p id="copy-status" class="inline-note" role="status"></p><button type="button" class="button secondary" id="reoptimize">调整要求重新优化</button></article>'+
@@ -294,7 +298,7 @@
     const input={resumeText:window.resumeText,analysis:state.profile,targetRole:$('target-role').value,jd:$('target-jd').value,focuses:[...document.querySelectorAll('input[name="focus"]:checked')].map(el=>el.value),extraRequirements:$('extra-requirements').value};
     try{window.OptimizationContract.input(input);}catch(error){displayError('optimization-error',error.message);return;}
     const generation=state.generation,controller=new AbortController();state.optimizeAbort=controller;state.busy=true;
-    state.optimization=null;$('optimization-results').replaceChildren();$('optimization-results').hidden=true;$('optimization-error').hidden=true;startOptimizationLoading();
+    state.optimization=null;window.ResumeReport.clear();$('optimization-results').replaceChildren();$('optimization-results').hidden=true;$('optimization-error').hidden=true;startOptimizationLoading();
     try{
       const result=await window.ResumeOptimization.optimize(input,{signal:controller.signal});
       if(generation!==state.generation)return;
@@ -306,6 +310,7 @@
     }finally{if(generation===state.generation){state.busy=false;state.optimizeAbort=null;stopOptimizationLoading();}}
   });
   $('optimization-results').addEventListener('click',async event=>{
+    if(event.target.closest('.download-pdf-report')){if(!state.optimization||state.busy)return;if(!window.ResumeReport.print()){$('pdf-report-status').hidden=false;$('pdf-report-status').textContent='当前浏览器未能打开打印窗口，请使用浏览器的打印或分享菜单保存 PDF。';}}
     if(event.target.closest('#toggle-full-resume')){const button=$('toggle-full-resume'),expanded=button.getAttribute('aria-expanded')!=='true';button.setAttribute('aria-expanded',String(expanded));button.textContent=expanded?'收起全文':'展开全文';$('optimized-resume-text').classList.toggle('expanded',expanded);}
     if(event.target.closest('#reoptimize')){if(state.busy)return;$('optimization-form').scrollIntoView({block:'start'});$('target-jd').focus();announce('调整要求后，点击开始优化简历。');}
     if(event.target.closest('#copy-resume')&&state.optimization){

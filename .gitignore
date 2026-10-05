@@ -12,3 +12,6 @@ node_modules/
 .source-audit/
 
 .company-audit/
+
+/tmp/pdfs/
+/output/pdf/
