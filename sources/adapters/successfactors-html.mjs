@@ -1,0 +1,3 @@
+import {job} from '../common.mjs';
+import {mainlandLocation} from '../mainland.mjs';
+export function parse(source,html,base){const rows=[];for(const m of html.matchAll(/<tr\b[^>]*class=["'][^"']*data-row[^"']*["'][^>]*>([\s\S]*?)<\/tr>/gi)){const row=m[1],a=row.match(/<a\b[^>]*href=["']([^"']+)["'][^>]*class=["'][^"']*jobTitle-link[^"']*["'][^>]*>([\s\S]*?)<\/a>/i),loc=row.match(/<span\b[^>]*class=["']jobLocation["'][^>]*>([\s\S]*?)<\/span>/i);if(!a||!loc)continue;const location=globalThis.JobCore.plain(loc[1]);if(!mainlandLocation(location))continue;const j=job(source,{title:globalThis.JobCore.plain(a[2]),city:location,url:new URL(a[1].replace(/&amp;/g,'&'),base).href});if(j)rows.push(j);}return rows;}

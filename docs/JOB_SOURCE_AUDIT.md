@@ -73,3 +73,8 @@ Git安全检查点：0ad5d5be4abd66abbbb930201d5d2a9123216e2e。唯一正式目�
 - WEBSEARCH_ENABLED=false、FREE_MODE=true；保留MCP和原1500计数保护，不调用MCP或收费搜索。
 - 实际验证上海2岗：Bosch智能驾驶数据科学家、Sia数据科学与分析咨询岗，均为数据分析相邻岗位，不能称为精准的互联网数据分析师覆盖。Qwen唯一一次批量返回45/25分，未编造缺失要求。完整原链接在direct-source-live-result.json。
 - 最终Worker版本：8b5d2497-8044-40a1-8319-5910381a7360。74项离线测试通过；主页面过滤与390px手机布局验证，无横向溢出，浏览器无Console报错。
+
+
+## 最新方案：只读取企业官方岗位
+
+此节覆盖前述广泛平台/MCP探索方案。117家登记、20家实际可用（全部为外企在华职位）。其余来源停用，不绕过访问限制。最新完整逐企业表、缓存与真实验证见 COMPANY_JOB_POOL.md；运行数据见 company-pool-live-result.json。第三方招聘平台与WebSearch MCP均不进入正常流程。

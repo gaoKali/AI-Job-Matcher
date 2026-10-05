@@ -1,0 +1,674 @@
+[
+  {
+    "companyName": "中国移动",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://job.10086.cn/"
+  },
+  {
+    "companyName": "中国电信",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://job.chinatelecom.com.cn/wt/TELE/web/index"
+  },
+  {
+    "companyName": "中国联通",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://chinaunicom.zhiye.com/"
+  },
+  {
+    "companyName": "国家电网",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://zhaopin.sgcc.com.cn/"
+  },
+  {
+    "companyName": "南方电网",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://zhaopin.csg.cn/"
+  },
+  {
+    "companyName": "国家能源集团",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://zhaopin.chnenergy.com.cn/"
+  },
+  {
+    "companyName": "中国石化",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://job.sinopec.com/"
+  },
+  {
+    "companyName": "中国石油",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://zhaopin.cnpc.com.cn/"
+  },
+  {
+    "companyName": "中国海油",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://cnooc.zhaopin.com/"
+  },
+  {
+    "companyName": "中国华能",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://zhaopin.chng.com.cn/"
+  },
+  {
+    "companyName": "中国大唐",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://www.cdtrczp.com/"
+  },
+  {
+    "companyName": "中国华电",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://www.chd.com.cn/site/2/"
+  },
+  {
+    "companyName": "国家电投",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://www.spic.com.cn/"
+  },
+  {
+    "companyName": "三峡集团",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://www.ctg.com.cn/"
+  },
+  {
+    "companyName": "中广核",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://cgn.zhiye.com/"
+  },
+  {
+    "companyName": "中国核工业",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://cnnc.zhiye.com/"
+  },
+  {
+    "companyName": "中国中车",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://zhaopin.crrczic.cc/"
+  },
+  {
+    "companyName": "中国建筑",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://cscec.zhiye.com/"
+  },
+  {
+    "companyName": "中国电建",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://zhaopin.powerchina.cn/"
+  },
+  {
+    "companyName": "中国交建",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://ccccltd.zhiye.com/"
+  },
+  {
+    "companyName": "中国铁建",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://crcc.zhiye.com/"
+  },
+  {
+    "companyName": "中国中铁",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://crec.zhiye.com/"
+  },
+  {
+    "companyName": "中国航空工业",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://aviation.zhiye.com/"
+  },
+  {
+    "companyName": "中国商飞",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://zhaopin.comac.cc/"
+  },
+  {
+    "companyName": "中国东方航空",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://job.ceair.com/"
+  },
+  {
+    "companyName": "中国南方航空",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://job.csair.com/"
+  },
+  {
+    "companyName": "中国国际航空",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://airchina.zhiye.com/"
+  },
+  {
+    "companyName": "中国邮政",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://chinapost.zhiye.com/"
+  },
+  {
+    "companyName": "中粮集团",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://cofco.zhiye.com/"
+  },
+  {
+    "companyName": "华润集团",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://cr.zhiye.com/"
+  },
+  {
+    "companyName": "招商局集团",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://cmhk.zhiye.com/"
+  },
+  {
+    "companyName": "中国中化",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://sinochem.zhiye.com/"
+  },
+  {
+    "companyName": "中国五矿",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://minmetals.zhiye.com/"
+  },
+  {
+    "companyName": "中国银行",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://campus.chinahr.com/pages/2026-boc/"
+  },
+  {
+    "companyName": "工商银行",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://job.icbc.com.cn/"
+  },
+  {
+    "companyName": "建设银行",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://job.ccb.com/"
+  },
+  {
+    "companyName": "农业银行",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://career.abchina.com/"
+  },
+  {
+    "companyName": "交通银行",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://job.bankcomm.com/"
+  },
+  {
+    "companyName": "中国人寿",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://chinalife.zhiye.com/"
+  },
+  {
+    "companyName": "中国人保",
+    "companyType": "央企",
+    "industry": "能源 电力 通信 金融 交通 制造 工程",
+    "careerUrl": "https://picc.zhiye.com/"
+  },
+  {
+    "companyName": "上海银行",
+    "companyType": "国企",
+    "industry": "银行 金融 制造 交通",
+    "careerUrl": "https://bankofshanghai.zhiye.com/"
+  },
+  {
+    "companyName": "浦发银行",
+    "companyType": "国企",
+    "industry": "银行 金融 制造 交通",
+    "careerUrl": "https://spdb.zhiye.com/"
+  },
+  {
+    "companyName": "北京银行",
+    "companyType": "国企",
+    "industry": "银行 金融 制造 交通",
+    "careerUrl": "https://bankofbeijing.zhiye.com/"
+  },
+  {
+    "companyName": "上海汽车集团",
+    "companyType": "国企",
+    "industry": "银行 金融 制造 交通",
+    "careerUrl": "https://saicmotor.zhiye.com/"
+  },
+  {
+    "companyName": "广汽集团",
+    "companyType": "国企",
+    "industry": "银行 金融 制造 交通",
+    "careerUrl": "https://gac.zhiye.com/"
+  },
+  {
+    "companyName": "深圳地铁",
+    "companyType": "国企",
+    "industry": "银行 金融 制造 交通",
+    "careerUrl": "https://szmc.zhiye.com/"
+  },
+  {
+    "companyName": "华为",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://career.huawei.com/cn/social-recruitment"
+  },
+  {
+    "companyName": "比亚迪",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://job.byd.com/"
+  },
+  {
+    "companyName": "联想",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://talent.lenovo.com.cn/position"
+  },
+  {
+    "companyName": "美团",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://zhaopin.meituan.com/"
+  },
+  {
+    "companyName": "京东",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://zhaopin.jd.com/"
+  },
+  {
+    "companyName": "拼多多",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://careers.pinduoduo.com/"
+  },
+  {
+    "companyName": "快手",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://zhaopin.kuaishou.cn/"
+  },
+  {
+    "companyName": "携程",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://careers.ctrip.com/"
+  },
+  {
+    "companyName": "滴滴",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://talent.didiglobal.com/"
+  },
+  {
+    "companyName": "哔哩哔哩",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://jobs.bilibili.com/"
+  },
+  {
+    "companyName": "百度",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://talent.baidu.com/"
+  },
+  {
+    "companyName": "腾讯",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://careers.tencent.com/"
+  },
+  {
+    "companyName": "阿里巴巴",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://talent.alibaba.com/"
+  },
+  {
+    "companyName": "字节跳动",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://jobs.bytedance.com/"
+  },
+  {
+    "companyName": "网易",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://hr.163.com/"
+  },
+  {
+    "companyName": "小米",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://hr.xiaomi.com/"
+  },
+  {
+    "companyName": "米哈游",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://join.mihoyo.com/"
+  },
+  {
+    "companyName": "OPPO",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://careers.oppo.com/"
+  },
+  {
+    "companyName": "vivo",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://hr.vivo.com/"
+  },
+  {
+    "companyName": "荣耀",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://career.honor.com/"
+  },
+  {
+    "companyName": "中兴通讯",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://job.zte.com.cn/"
+  },
+  {
+    "companyName": "海康威视",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://hikvision.zhiye.com/"
+  },
+  {
+    "companyName": "大华",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://dahua.zhiye.com/"
+  },
+  {
+    "companyName": "美的",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://careers.midea.com/"
+  },
+  {
+    "companyName": "格力",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://job.gree.com/"
+  },
+  {
+    "companyName": "海尔",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://haier.zhiye.com/"
+  },
+  {
+    "companyName": "吉利",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://job.geely.com/"
+  },
+  {
+    "companyName": "蔚来",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://nio.jobs/"
+  },
+  {
+    "companyName": "理想汽车",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://www.lixiang.com/careers.html"
+  },
+  {
+    "companyName": "小鹏汽车",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://xiaopeng.zhiye.com/"
+  },
+  {
+    "companyName": "宁德时代",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://careers.catl.com/"
+  },
+  {
+    "companyName": "顺丰",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://hr.sf-express.com/"
+  },
+  {
+    "companyName": "招商银行",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://career.cmbchina.com/"
+  },
+  {
+    "companyName": "平安集团",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://talent.pingan.com/"
+  },
+  {
+    "companyName": "迈瑞医疗",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://mindray.zhiye.com/"
+  },
+  {
+    "companyName": "药明康德",
+    "companyType": "民企",
+    "industry": "科技 互联网 软件 AI 汽车 新能源 消费",
+    "careerUrl": "https://wuxiapptec.zhiye.com/"
+  },
+  {
+    "companyName": "西门子",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://jobs.siemens.com.cn/siemens/position/index"
+  },
+  {
+    "companyName": "SAP",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://jobs.sap.com/"
+  },
+  {
+    "companyName": "Oracle",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.oracle.com/"
+  },
+  {
+    "companyName": "Microsoft",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.microsoft.com/"
+  },
+  {
+    "companyName": "Apple",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://jobs.apple.com/"
+  },
+  {
+    "companyName": "Amazon",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.amazon.jobs/"
+  },
+  {
+    "companyName": "Google",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.google.com/about/careers/applications/jobs/results/"
+  },
+  {
+    "companyName": "IBM",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.ibm.com/careers/"
+  },
+  {
+    "companyName": "Intel",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://jobs.intel.com/"
+  },
+  {
+    "companyName": "NVIDIA",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite"
+  },
+  {
+    "companyName": "AMD",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.amd.com/"
+  },
+  {
+    "companyName": "Qualcomm",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.qualcomm.com/"
+  },
+  {
+    "companyName": "Cisco",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://jobs.cisco.com/"
+  },
+  {
+    "companyName": "Tesla",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.tesla.com/careers/search/"
+  },
+  {
+    "companyName": "BASF",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://basf.jobs/"
+  },
+  {
+    "companyName": "Bayer",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://jobs.bayer.com/"
+  },
+  {
+    "companyName": "Schneider Electric",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.se.com/"
+  },
+  {
+    "companyName": "Honeywell",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.honeywell.com/"
+  },
+  {
+    "companyName": "Accenture",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.accenture.com/us-en/careers"
+  },
+  {
+    "companyName": "Deloitte",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://jobs.deloitte.com/"
+  },
+  {
+    "companyName": "PwC",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.pwccn.com/en/careers.html"
+  },
+  {
+    "companyName": "EY",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.ey.com/"
+  },
+  {
+    "companyName": "KPMG",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://kpmg.com/cn/en/home/careers.html"
+  },
+  {
+    "companyName": "Unilever",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.unilever.com/"
+  },
+  {
+    "companyName": "Nestlé",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.nestle.com/jobs"
+  },
+  {
+    "companyName": "P&G",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.pgcareers.com/"
+  },
+  {
+    "companyName": "L’Oréal",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.loreal.com/"
+  },
+  {
+    "companyName": "Roche",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.roche.com/"
+  },
+  {
+    "companyName": "Novartis",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://www.novartis.com/careers/career-search"
+  },
+  {
+    "companyName": "AstraZeneca",
+    "companyType": "外企",
+    "industry": "科技 软件 芯片 制造 咨询 医药 汽车 工业",
+    "careerUrl": "https://careers.astrazeneca.com/"
+  }
+]

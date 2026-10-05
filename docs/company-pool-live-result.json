@@ -1,0 +1,94 @@
+{
+  "checkedAt": "2026-10-05T14:58:03.651Z",
+  "worker": "https://ai-job-matcher-api.gaoweishmily.workers.dev",
+  "version": "04abb287-9072-45d8-a81a-e30f1abb24f7",
+  "checkpoint": "d5850a5",
+  "registeredCompanies": 117,
+  "workingCompanies": 20,
+  "registeredCompanyTypes": {
+    "外企": 65,
+    "民企": 29,
+    "央企": 21,
+    "国企": 2
+  },
+  "workingCompanyTypes": {
+    "外企": 20,
+    "民企": 0,
+    "国央企": 0
+  },
+  "poolMainlandPostings": 557,
+  "poolLimitPerCompany": 200,
+  "searches": [
+    {
+      "role": "数据分析师",
+      "city": "上海",
+      "count": 3,
+      "companies": [
+        "NielsenIQ",
+        "Sia",
+        "Vitol"
+      ]
+    },
+    {
+      "role": "产品经理",
+      "city": "上海",
+      "count": 6,
+      "companies": [
+        "Bosch Group",
+        "Aumovio",
+        "Avery Dennison"
+      ]
+    },
+    {
+      "role": "软件工程师",
+      "city": "北京",
+      "count": 0
+    },
+    {
+      "role": "算法工程师",
+      "city": "深圳",
+      "count": 0
+    }
+  ],
+  "MCPcalls": 0,
+  "QwenResumeCalls": 1,
+  "QwenJobBatchCalls": 1,
+  "matchedJobCount": 3,
+  "scores": [
+    {
+      "company": "Vitol",
+      "score": 65
+    },
+    {
+      "company": "NielsenIQ",
+      "score": 40
+    },
+    {
+      "company": "Sia",
+      "score": 35
+    }
+  ],
+  "cacheHours": 4,
+  "HTTPlimit": 38,
+  "concurrency": 3,
+  "refreshCompaniesPerSearch": 6,
+  "finalSchemaGuardRetestedOffline": true,
+  "notes": [
+    "Qwen仅用不含真实个人信息的合成简历测试。",
+    "最新缺JD防护完成离线测试，不额外重复调用模型。",
+    "557为官方API返回的大陆公开职位记录，部分只缓存元信息；最终推荐必须取到真实职位页面URL。",
+    "20家实际可用企业均为外企在大陆招聘，不代表已经覆盖国央企/民企自动采集。",
+    "每家公司当前最多缓存200个大陆职位，职位池不等于全网所有职位。"
+  ],
+  "openedOfficialUrls": [
+    "https://jobs.smartrecruiters.com/NielsenIQ/744000132375532-data-scientist",
+    "https://jobs.smartrecruiters.com/Sia/744000138017305-senior-consultant-data-science-analytics",
+    "https://jobs.smartrecruiters.com/Vitol/744000108423825-commercial-analyst-",
+    "https://jobs.smartrecruiters.com/BoschGroup/744000148460069-power-semiconductor-product-manager-rbcn-me",
+    "https://jobs.smartrecruiters.com/BoschGroup/744000147296199-motor-product-manager-humanoid-robot-rbcn"
+  ],
+  "urlVerification": "五个实际原始页面通过公开网页读取确认公司与职位标题；NielsenIQ浏览器已导航但整页浏览器工具读取超时，改由原页面直接读取验证，无验证码绕过。",
+  "consoleErrors": 0,
+  "mobileOverflow": false,
+  "testsPassed": 81
+}

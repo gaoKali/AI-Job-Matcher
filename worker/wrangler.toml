@@ -30,3 +30,12 @@ class_name = "SearchBudget"
 [[migrations]]
 tag = "search-budget-v1"
 new_sqlite_classes = ["SearchBudget"]
+
+# Public company jobs only; no resume, profile or personal result is stored.
+[[durable_objects.bindings]]
+name = "COMPANY_JOB_POOL"
+class_name = "CompanyJobPool"
+
+[[migrations]]
+tag = "company-pool-v1"
+new_sqlite_classes = ["CompanyJobPool"]

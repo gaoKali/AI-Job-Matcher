@@ -1,3 +1,4 @@
+export {CompanyJobPool} from '../sources/company-pool.mjs';
 export {SearchBudget} from '../ai/search-budget.mjs';
 import { handleAnalysis } from '../ai/handler.mjs';
 import { handleJobs } from '../ai/jobs-handler.mjs';

@@ -10,3 +10,5 @@ node_modules/
 /简历分析和求职方向 Skill.zip
 
 .source-audit/
+
+.company-audit/
