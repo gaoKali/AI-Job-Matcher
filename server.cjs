@@ -11,6 +11,8 @@ const allowed = new Map([
   ['/assets/favicon.svg', 'image/svg+xml'], ['/tools/live-search-test.html','text/html; charset=utf-8'], ['/tools/live-search-test.js','text/javascript; charset=utf-8']
 ]);
 allowed.set('/tools/direct-search-test.html','text/html; charset=utf-8');allowed.set('/tools/direct-search-test.js','text/javascript; charset=utf-8');
+allowed.set('/js/optimization-contract.js','text/javascript; charset=utf-8');
+allowed.set('/js/optimization-provider.js','text/javascript; charset=utf-8');
 const port = Number(process.env.PORT || 4173);
 const server = http.createServer(async (request, response) => {
   if (request.url.split('?')[0] === '/api/resume/analyze') {

@@ -41,3 +41,8 @@ WEBSEARCH_ENABLED=false，保留MCP与已有ATS代码，不重置计数。采用
 
 ## 最新：仅企业官方大陆岗位（覆盖所有之前第5步方案）
 Git安全检查点d5850a5。company-sources独立登记117家，仅20家实际获得大陆职位并启用；全部为外企在华岗位。国央企23/民企29/外企65为登记数，不是working数。公共DO职位池4小时、按需最多6家公司/并发3/HTTP38/总采集75秒、最多15岗一次匹配。第三方招聘平台及MCP默认关闭但代码保留，无付费搜索API。实测557个池记录；上海数据3/上海产品6/北京软件0/深圳算法0，禁止以异地或模拟职位填空。一次真实3岗Qwen批量成功；缺JD后端防猜测回归验证，81项测试通过。同一Worker版本04abb287-9072-45d8-a81a-e30f1abb24f7。未修改Key/Base URL/qwen3.8模型。详见docs/COMPANY_JOB_POOL.md，不能宣称117家均可用；不继续Agent/Pages/登录。
+
+## 当前正式方向：AI 简历优化（覆盖所有历史岗位方案）
+用户最新要求第三步改为用户粘贴真实JD的AI简历优化。保留前两步及旧源码；正常产品不得再搜索/抓取/匹配岗位。JOBS_ENABLED=false、WEBSEARCH_ENABLED=false。保持qwen3.8-flash，现有Worker/Secret/Base URL不变。优化一次显式点击仅一次模型，不自动重试。只重述原文，无依据建议单独列出；完整稿从核对后的片段应用到原文，保留时间公司教育。见docs/RESUME_OPTIMIZATION.md。检查点4dee80c，不开发Agent/登录/数据库/Pages/导出。
+
+本轮验收：93项测试通过，真实中文/英文JD优化、无项目/有项目、复制、重新优化及手机布局验证成功。Worker最终版本759bbe8c-4618-4f33-b898-57341be79b05，未修改Secret/Base URL。正常流程不得重新加载旧职位脚本。

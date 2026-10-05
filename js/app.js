@@ -48,9 +48,17 @@
   function clearExtracted() {
     state.generation++;
     state.aiAbort?.abort();
-    state.jobAbort?.abort();
-    state.jobAbort = null;
-    $('jobs-loading').hidden = true;
+    state.optimizeAbort?.abort();
+    state.optimizeAbort = null;
+    stopOptimizationLoading();
+    state.optimization = null;
+    $('optimization-results').replaceChildren();
+    $('optimization-results').hidden = true;
+    $('optimization-error').hidden = true;
+    $('optimization-form').reset();
+    $('jd-count').textContent = '0 / 12000';
+    $('resume-origin').textContent = '';
+    $('analysis-notice').textContent = '';
     state.aiAbort = null;
     stopLoading();
     state.readAbort?.abort();
@@ -72,11 +80,8 @@
     $('extracted-preview').hidden = true;
     $('extracted-text').textContent = '';
     $('analysis-content').replaceChildren();
-    $('job-list').replaceChildren();
-    $('job-detail').replaceChildren();
-    $('selected-preferences').replaceChildren();
     $('analyze-button').disabled = false;
-    $('search-button').disabled = false;
+    $('optimize-button').disabled = false;
     showStep(1, false);
   }
   function readingStatus(title, detail = '') {
@@ -138,7 +143,8 @@
     state.generation++;
     Object.assign(state, { method: 'file', file: null, profile: null, preferences: {}, jobs: [], highestStep: 1, busy: false });
     $('resume-form').reset();
-    $('preferences-form').reset();
+    $('optimization-form').reset();
+    $('jd-count').textContent = '0 / 12000';
     $('resume-text').value = '';
     $('text-count').textContent = '0 / 150000';
     $('file-summary').hidden = true;
@@ -146,21 +152,11 @@
     $('file-size').textContent = '';
     $('resume-origin').textContent = '';
     $('analysis-content').replaceChildren();
-    $('job-list').replaceChildren();
-    $('job-detail').replaceChildren();
-    $('selected-preferences').replaceChildren();
-    $('empty-results').hidden = true;
-    $('results-count').textContent = '';
-    $('min-score').value = '0';
-    $('sort-order').value = 'desc';
-    $('score-value').value = '0 分';
-    $('search-error').hidden = true;
     $('analyze-button').disabled = false;
-    $('search-button').disabled = false;
-    if ($('job-dialog').open) $('job-dialog').close();
+    $('optimize-button').disabled = false;
     setMethod('file');
     showStep(1, focus);
-    announce('已清空本次简历、分析和岗位结果，可以重新开始。');
+    announce('已清空本次简历、分析和优化结果，可以重新开始。');
   }
   function renderMockAnalysis(profile) {
     $('analysis-content').innerHTML = `
@@ -193,30 +189,6 @@
       <div class="analysis-grid"><article class="card analysis-card"><h3>工作经历与项目摘要</h3>${'<p>' + escape(profile.workExperienceSummary) + '</p>'}</article><article class="card analysis-card"><h3>教育背景</h3>${'<p>' + escape(profile.educationSummary) + '</p>'}</article><article class="card analysis-card"><h3>简历优势</h3>${items(profile.strengths)}</article><article class="card analysis-card"><h3>简历不足与建议补充</h3>${items(profile.weaknesses)}<p class="inline-note">未描述不等于没有能力；请仅补充真实经历与成果。</p></article><article class="card analysis-card"><h3>缺少的信息</h3>${profile.missingInformation.length ? list(profile.missingInformation) : '<p>暂未识别到关键缺失信息，请核对摘要。</p>'}</article></div>
       <article class="card directions-card"><h3>推荐求职方向</h3><p class="inline-note">根据经历推断的方向；推荐程度表示证据充分度，不是录用概率。</p><div class="directions">${profile.recommendedDirections.map(d => `<div class="direction"><strong>${escape(d.title)}</strong><span class="chip">${escape(confidence[d.confidence] || d.confidence)}</span><p>${escape(d.reason)}</p><details><summary>查看判断依据</summary><p>${escape(d.evidence)}</p></details><button type="button" class="text-button choose-direction" data-role="${escape(d.title)}">用作目标岗位 →</button></div>`).join('') || '<p>当前信息不足，暂不能推荐可靠方向。</p>'}</div></article>`;
   }
-  function renderPreferences() {
-    const labels = { role: '目标岗位', city: '城市', industry: '行业', workMode: '工作方式', level: '级别', mustHave: '必须满足', exclude: '不考虑' };
-    const entries = Object.entries(state.preferences).filter(([, value]) => value);
-    $('selected-preferences').innerHTML = entries.length ? entries.map(([key, value]) => `<span class="chip">${labels[key]}：${escape(value)}</span>`).join('') : '<span class="chip">暂不限制求职条件 · 根据简历筛选公开岗位</span>';
-  }
-  function prepareJobFilters() {
-    for (const [id,key,label] of [['filter-company','company','全部公司'],['filter-city','location','全部城市'],['filter-source','source','全部来源'],['filter-industry','industry','全部行业']]) {
-      $(id).innerHTML='<option value="">'+label+'</option>'+[...new Set(state.jobs.map(j=>j[key]))].sort().map(v=>'<option value="'+escape(v)+'">'+escape(v)+'</option>').join('');
-    }
-  }
-  function renderJobs() {
-    const minimum=Number($('min-score').value);
-    const visible=window.JobCore.filter(state.jobs,{minimum,order:$('sort-order').value,company:$('filter-company').value,city:$('filter-city').value,source:$('filter-source').value,companyType:$('filter-company-type').value,industry:$('filter-industry').value});
-    $('score-value').value=minimum+' 分';
-    $('results-count').textContent=visible.length+' 个真实岗位 / 共 '+state.jobs.length+' 个候选';
-    $('empty-results').hidden=visible.length!==0;
-    $('job-list').innerHTML=visible.map(job=>{
-      const scored=Number.isFinite(job.matchScore),url=window.JobCore.safeUrl(job.url);
-      const row=(title,values)=>'<div class="reason-row"><span class="reason-icon" aria-hidden="true">'+(title==='主要差距'?'△':'✓')+'</span><div><strong>'+title+'</strong><p>'+values.map(escape).join(' ')+'</p></div></div>';
-      return '<article class="card job-card"><div class="job-top"><div><div class="company-icon" aria-hidden="true">'+escape(job.company.slice(0,1))+'</div><h3>'+escape(job.title)+'</h3><p class="company-name">'+escape(job.company)+'</p></div><div class="score '+(scored&&job.matchScore<80?'medium':'')+'"><strong>'+(scored?job.matchScore:'—')+'</strong><span>'+(scored?'AI匹配分':'暂未评分')+'</span></div></div><div class="job-meta"><span>'+escape(job.location)+'</span><span>'+escape(job.workMode)+'</span><span>'+escape(job.source)+'</span><span>'+escape(job.sourceType==='job_board'?'招聘平台':job.sourceType==='company_career'?'公司官网':'公司 ATS')+'</span><span>'+escape(job.companyType||'未公开')+'</span><span>部门：'+escape(job.department||'未公开')+'</span><span>薪资：'+escape(job.salary||'未公开')+'</span><span>经验：'+escape(job.experience||'未公开')+'</span><span>学历：'+escape(job.education||'未公开')+'</span><span>置信度：'+escape(job.confidence||'低')+'</span></div><div class="job-reasons">'+row('匹配原因',job.matchReasons.length?job.matchReasons:['尚未取得AI匹配结果，请核对原始JD。'])+row('主要差距',job.gaps.length?job.gaps:['暂未识别具体差距，请结合JD核实。'])+row('申请建议',[job.recommendation])+ (job.resumeTips.length?row('简历重点',job.resumeTips)+'<p class="inline-note">仅在有真实经历时补充；不要填写未掌握的技能、虚构项目或成果。</p>':'')+'</div><details class="job-description"><summary>查看 JD 摘要</summary><p>'+escape(job.description||'公开接口未提供详细JD，请查看原始岗位。')+'</p></details><div class="job-footer"><span class="job-source">来源：'+escape(job.source)+(job.publishedAt?' · '+escape(job.publishedAt.slice(0,10)):' · 发布日期未提供')+'</span>'+(url?'<a class="button secondary" href="'+escape(url)+'" target="_blank" rel="noopener noreferrer">查看企业官方岗位 ↗</a>':'<span>申请链接暂不可用</span>')+'</div></article>';
-    }).join('');
-    announce('显示 '+visible.length+' 个真实岗位，最低匹配分 '+minimum+' 分。');
-  }
-  function showJob() {} // Original dialog retained; real cards link directly to employers.
   $('file-method').addEventListener('click', () => setMethod('file'));
   $('text-method').addEventListener('click', () => { setMethod('text'); $('resume-text').focus(); });
   $('resume-file').addEventListener('change', event => { if (event.target.files[0]) selectFile(event.target.files[0]); });
@@ -253,13 +225,12 @@
       if (generation !== state.generation) return;
       state.profile = profile;
       state.jobs = [];
-      state.highestStep = 2;
-      $('job-list').replaceChildren();
-      $('resume-origin').textContent = `已${state.method === 'file' ? '读取：' + state.file.name : '接收粘贴文本'}，共 ${Array.from(text).length.toLocaleString('zh-CN')} 个字符。${profile.isMock ? '当前为开发演示，以下不是对这份材料的真实分析。' : '以下分析基于你提供的简历，请核对事实和建议。'}`;
+      state.highestStep = 3;
+        $('resume-origin').textContent = `已${state.method === 'file' ? '读取：' + state.file.name : '接收粘贴文本'}，共 ${Array.from(text).length.toLocaleString('zh-CN')} 个字符。${profile.isMock ? '当前为开发演示，以下不是对这份材料的真实分析。' : '以下分析基于你提供的简历，请核对事实和建议。'}`;
       $('analysis-notice').textContent = profile.isMock ? '开发演示模式：使用独立虚构画像，不调用 AI。' : 'AI 分析已完成。事实依据来自简历；推荐方向是推断，待补充内容是建议。';
       renderAnalysis(profile);
       showStep(2);
-      announce('简历分析已完成，可继续填写求职需求。');
+      announce('简历分析已完成，可继续粘贴目标 JD 优化简历。');
     } catch (error) {
       if (generation !== state.generation || error.code === 'CANCELLED') return;
       const diagnostic = ['127.0.0.1', 'localhost', '[::1]'].includes(window.location.hostname) ? '（' + (error.code || 'UNAVAILABLE') + (error.status ? '，HTTP ' + error.status : '，未取得 HTTP 状态') + '）' : '';
@@ -272,45 +243,69 @@
     const button = event.target.closest('.choose-direction');
     if (!button) return;
     $('target-role').value = button.dataset.role;
-    $('target-role').focus();
-    $('preferences-form').scrollIntoView({ block: 'start' });
+    showStep(3);
+    $('target-jd').focus();
     announce('已将 ' + button.dataset.role + ' 填入目标岗位。');
   });
-  $('preferences-form').addEventListener('submit', async event => {
-    event.preventDefault();
-    if (state.busy || !state.profile) return;
-    const generation = state.generation;
-    const preferences = Object.fromEntries([...new FormData(event.target).entries()].map(([key, value]) => [key, value.trim()]));
-    state.busy = true;
-    $('search-button').disabled = true;
-    $('search-error').hidden = true;
-    try {
-      const controller=new AbortController();state.jobAbort=controller;
-      $('jobs-loading').hidden=false;$('search-button').textContent='正在搜索与匹配……';
-      const result = await providers.jobProvider.search(preferences,state.profile,{signal:controller.signal,onProgress:message=>{if(generation===state.generation)$('jobs-loading-text').textContent=message;}});
-      const jobs=result.jobs;
-      if (generation !== state.generation) return;
-      state.preferences = preferences;
-      state.jobs = jobs;
-      $('min-score').value = '0';
-      $('sort-order').value = 'desc';
-      $('jobs-warnings').textContent=result.warnings.join(' ');$('jobs-warnings').hidden=!result.warnings.length;
-      $('jobs-summary').textContent='本次从 '+(result.availableSources||0)+' 家企业的官方招聘源中检索到 '+result.total+' 个相关岗位，展示 '+result.jobs.length+' 个推荐岗位。职位池当前有 '+(result.poolTotal||0)+' 个大陆公开职位；仅缓存公开岗位 4 小时。';
-      prepareJobFilters();renderPreferences();
-      renderJobs();
-      showStep(3);
-    } catch(error) { if(generation===state.generation&&error.code!=='CANCELLED')displayError('search-error','公开岗位搜索暂时失败，请稍后重试。'); }
-    finally { if (generation === state.generation) { state.busy = false; state.jobAbort=null; $('jobs-loading').hidden=true; $('search-button').textContent='搜索匹配岗位 →'; $('search-button').disabled = false; } }
+  let optimizationTimer;
+  function stopOptimizationLoading(){
+    clearInterval(optimizationTimer);
+    $('optimization-loading').hidden=true;
+    $('optimization-form').setAttribute('aria-busy','false');
+    $('optimize-button').textContent='开始优化简历 →';
+    $('optimization-form').querySelectorAll('input,textarea,button').forEach(el=>el.disabled=false);
+  }
+  function startOptimizationLoading(){
+    const hints=['正在理解目标岗位……','正在分析 JD 关键词……','正在匹配你的真实经历……','正在优化简历表达……','正在生成针对性简历……'];let index=0;
+    $('optimization-loading').hidden=false;$('optimization-loading-text').textContent=hints[0];
+    $('optimization-form').setAttribute('aria-busy','true');
+    $('optimization-form').querySelectorAll('input,textarea,button').forEach(el=>el.disabled=true);
+    $('optimize-button').textContent='正在优化，请稍候……';
+    optimizationTimer=setInterval(()=>{$('optimization-loading-text').textContent=hints[++index%hints.length];},3500);
+  }
+  function renderOptimization(result,role){
+    const items=values=>values.length?list(values):'<p class="subtle">当前未提供足够信息，请结合原文核对。</p>';
+    const compare=(title,entries)=>entries.length?'<article class="card optimization-card"><h3>'+title+'</h3>'+entries.map(item=>'<section class="rewrite-item"><h4>'+escape(item.company?item.company+' · '+item.title:item.name)+'</h4><div class="rewrite-grid"><div class="original-copy"><span class="overline">原文</span><p>'+escape(item.original)+'</p></div><div class="optimized-copy"><span class="overline">优化后</span><p>'+escape(item.optimized)+'</p></div></div><p class="rewrite-reason"><strong>为什么这么改：</strong>'+escape(item.reason)+'</p></section>').join('')+'</article>':'';
+    $('optimization-results').innerHTML=
+      '<article class="card optimization-card"><div class="optimization-overview"><div><p class="eyebrow">岗位匹配概览</p><h3>'+escape(role)+'</h3><p>'+escape(result.jdSummary)+'</p></div><div class="score"><strong>'+escape(result.matchScore)+'</strong><span>原始简历匹配度 / 100</span></div></div><p class="inline-note">评分反映现有简历与本次 JD 的证据匹配程度，不是录用概率。JD 信息少时请谨慎参考。</p><div class="chips">'+result.importantKeywords.map(s=>'<span class="chip">'+escape(s)+'</span>').join('')+'</div><div class="analysis-grid"><div><h4>已匹配优势</h4>'+items(result.matchedStrengths)+'</div><div><h4>主要差距</h4>'+items(result.gaps)+'</div></div></article>'+
+      '<article class="card optimization-card"><h3>这次重点优化了什么</h3>'+items(result.optimizationSummary)+'</article>'+
+      '<article class="card optimization-card"><h3>个人简介优化</h3><p class="plain-copy">'+escape(result.optimizedProfile)+'</p></article>'+
+      compare('工作经历优化',result.optimizedExperiences)+compare('项目经历优化',result.optimizedProjects)+
+      '<article class="card optimization-card"><h3>建议重点展示的真实技能</h3>'+items(result.optimizedSkills)+'</article>'+
+      '<article class="card optimization-card evidence-card"><h3>这些信息如果你有，建议补充</h3><p class="inline-note">以下问题没有写入优化简历。只在确实具备时补充真实经历和数据。</p>'+items(result.missingEvidence)+items(result.suggestedQuestions)+'</article>'+
+      '<article class="card optimization-card"><div class="section-heading compact"><div><h3>完整优化版简历</h3><p>请对照原文核对后使用。未确认的事实保留原文，不自动补写。</p></div><button type="button" class="button primary" id="copy-resume">复制优化简历</button></div><pre class="full-resume" id="optimized-resume-text"></pre><p id="copy-status" class="inline-note" role="status"></p><button type="button" class="button secondary" id="reoptimize">调整要求重新优化</button></article>';
+    $('optimized-resume-text').textContent=result.fullOptimizedResume;
+    $('optimization-results').hidden=false;
+    $('optimization-results').scrollIntoView({block:'start'});
+  }
+  $('go-optimize').addEventListener('click',()=>{showStep(3);$('target-role').focus();});
+  $('target-jd').addEventListener('input',()=>{$('jd-count').textContent=$('target-jd').value.length+' / 12000';});
+  $('optimization-form').addEventListener('submit',async event=>{
+    event.preventDefault();if(state.busy||state.reading)return;
+    if(!state.profile||!window.resumeText){displayError('optimization-error','请先上传简历并完成简历分析。');return;}
+    const input={resumeText:window.resumeText,analysis:state.profile,targetRole:$('target-role').value,jd:$('target-jd').value,focuses:[...document.querySelectorAll('input[name="focus"]:checked')].map(el=>el.value),extraRequirements:$('extra-requirements').value};
+    try{window.OptimizationContract.input(input);}catch(error){displayError('optimization-error',error.message);return;}
+    const generation=state.generation,controller=new AbortController();state.optimizeAbort=controller;state.busy=true;
+    state.optimization=null;$('optimization-results').replaceChildren();$('optimization-results').hidden=true;$('optimization-error').hidden=true;startOptimizationLoading();
+    try{
+      const result=await window.ResumeOptimization.optimize(input,{signal:controller.signal});
+      if(generation!==state.generation)return;
+      state.optimization=result;renderOptimization(result,input.targetRole);announce('简历优化已完成，请核对原文、改写与完整简历。');
+    }catch(error){
+      if(generation!==state.generation||error.code==='CANCELLED')return;
+      const detail=['127.0.0.1','localhost'].includes(location.hostname)?'（'+(error.code||'UNAVAILABLE')+(error.status?'，HTTP '+error.status:'')+'）':'';
+      displayError('optimization-error','简历优化暂时失败，请稍后重试。'+detail);
+    }finally{if(generation===state.generation){state.busy=false;state.optimizeAbort=null;stopOptimizationLoading();}}
   });
-  $('sort-order').addEventListener('change', renderJobs);
-  $('min-score').addEventListener('input', renderJobs);
-  $('clear-filter').addEventListener('click', () => { $('min-score').value = '0'; for(const id of ['filter-company','filter-city','filter-source','filter-company-type','filter-industry'])$(id).value=''; renderJobs(); });
-  for(const id of ['filter-company','filter-city','filter-source','filter-company-type','filter-industry'])$(id).addEventListener('change',renderJobs);
-  $('job-list').addEventListener('click', event => { const button = event.target.closest('.view-job'); if (button) showJob(button.dataset.jobId); });
-  $('close-dialog').addEventListener('click', () => $('job-dialog').close());
-  $('dialog-done').addEventListener('click', () => $('job-dialog').close());
-  $('job-dialog').addEventListener('click', event => { if (event.target === $('job-dialog')) { const box = event.target.getBoundingClientRect(); if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) event.target.close(); } });
-  $('search-again').addEventListener('click', () => { showStep(2); $('target-role').focus(); $('preferences-form').scrollIntoView({ block: 'start' }); announce('修改求职需求后，点击搜索匹配岗位。'); });
+  $('optimization-results').addEventListener('click',async event=>{
+    if(event.target.closest('#reoptimize')){if(state.busy)return;$('optimization-form').scrollIntoView({block:'start'});$('target-jd').focus();announce('调整要求后，点击开始优化简历。');}
+    if(event.target.closest('#copy-resume')&&state.optimization){
+      const button=$('copy-resume');button.disabled=true;
+      try{await navigator.clipboard.writeText(state.optimization.fullOptimizedResume);$('copy-status').textContent='已复制，可以粘贴到你的文档中。';}
+      catch{const range=document.createRange();range.selectNodeContents($('optimized-resume-text'));const selection=getSelection();selection.removeAllRanges();selection.addRange(range);$('copy-status').textContent='浏览器未允许自动复制，已选中文字，请按 Ctrl+C（手机可长按复制）。';}
+      finally{button.disabled=false;}
+    }
+  });
   document.querySelectorAll('.reset-resume').forEach(button => button.addEventListener('click', reset));
   document.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => showStep(Number(button.dataset.step))));
   // Clear restored form values on reload/back-forward, including browser bfcache.
@@ -333,5 +328,5 @@
       } finally { checkButton.disabled = false; if (!state.busy) $('analyze-button').disabled = false; }
     });
   }
-  $('analysis-mode').textContent = providers.analysisMode === 'demo' ? '开发演示 · 不调用 AI' : 'AI 简历分析 · 真实岗位';
+  $('analysis-mode').textContent = providers.analysisMode === 'demo' ? '开发演示 · 不调用 AI' : 'AI 简历分析 · 定向优化';
 })();

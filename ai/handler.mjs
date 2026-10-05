@@ -17,7 +17,7 @@ export async function readLimited(request, maxBytes = MAX_BYTES) {
   if (!reader) throw contract.failure('BAD_REQUEST');
   const parts = []; let size = 0;
   try {
-    while (true) { const { value, done } = await reader.read(); if (done) break; size += value.length; if (size > MAX_BYTES) { await reader.cancel(); throw contract.failure('INPUT_TOO_LONG'); } parts.push(value); }
+    while (true) { const { value, done } = await reader.read(); if (done) break; size += value.length; if (size > maxBytes) { await reader.cancel(); throw contract.failure('INPUT_TOO_LONG'); } parts.push(value); }
   } finally { reader.releaseLock(); }
   const bytes = new Uint8Array(size); let offset = 0;
   for (const part of parts) { bytes.set(part, offset); offset += part.length; }

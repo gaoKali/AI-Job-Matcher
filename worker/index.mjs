@@ -1,6 +1,7 @@
 export {CompanyJobPool} from '../sources/company-pool.mjs';
 export {SearchBudget} from '../ai/search-budget.mjs';
 import { handleAnalysis } from '../ai/handler.mjs';
+import {handleOptimization} from '../ai/optimization-handler.mjs';
 import { handleJobs } from '../ai/jobs-handler.mjs';
 export default {
   async fetch(request, env, ctx) {
@@ -11,7 +12,11 @@ export default {
       if (request.method !== 'GET') return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: { ...headers, Allow: 'GET' } });
       return new Response(JSON.stringify({ ok: true, service: 'ai-job-matcher-api' }), { status: 200, headers });
     }
-    if(pathname.startsWith('/api/jobs/'))return handleJobs(request,env,ctx);
+    if(pathname.startsWith('/api/jobs/')) {
+      if(env.JOBS_ENABLED!=='true')return new Response(JSON.stringify({error:{code:'FEATURE_DISABLED'}}),{status:403,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+      return handleJobs(request,env,ctx);
+    }
+    if(pathname==='/api/resume/optimize')return handleOptimization(request,env);
     if (pathname !== '/api/resume/analyze') return new Response('Not found', { status: 404 });
     return handleAnalysis(request, env);
   }

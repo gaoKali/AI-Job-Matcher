@@ -1,3 +1,7 @@
+# 当前产品方向（2026-10-05）
+
+主流程已改为：上传/解析简历 → 真实 AI 简历分析 → 用户粘贴 JD 的 AI 简历优化。历史岗位搜索方案已退出正常界面，代码保留但 JOBS_ENABLED=false、WEBSEARCH_ENABLED=false；不再采集职位或调用搜索服务。最新说明见 [简历优化](RESUME_OPTIMIZATION.md)。下方旧岗位需求仅作历史记录，不作为本阶段开发目标。
+
 # 开发任务清单
 
 模型修订（2026-10-05）：已完成默认qwen3.8-flash统一、当前官方JSON/北京免费额度核验、业务空间Host接入、reasoning_effort=none兼容、28项现有及新增测试。不申请真实Key、不部署。本人未来仅填写AI_API_KEY（Secret）与AI_BASE_URL，其余助手负责。
