@@ -8,7 +8,7 @@ const allowed = new Map([
   ['/js/parser-core.js', 'text/javascript; charset=utf-8'], ['/js/resume-parser.js', 'text/javascript; charset=utf-8'], ['/js/resume-worker.js', 'text/javascript; charset=utf-8'],
   ['/js/analysis-contract.js', 'text/javascript; charset=utf-8'], ['/js/analysis-config.js', 'text/javascript; charset=utf-8'], ['/js/analysis-provider.js', 'text/javascript; charset=utf-8'],
   ...['job-sources.js','job-core.js','websearch-core.js','jobs-provider.js'].map(f=>['/js/'+f,'text/javascript; charset=utf-8']),
-  ['/assets/favicon.svg', 'image/svg+xml']
+  ['/assets/favicon.svg', 'image/svg+xml'], ['/tools/live-search-test.html','text/html; charset=utf-8'], ['/tools/live-search-test.js','text/javascript; charset=utf-8']
 ]);
 const port = Number(process.env.PORT || 4173);
 const server = http.createServer(async (request, response) => {

@@ -295,7 +295,7 @@
       $('min-score').value = '0';
       $('sort-order').value = 'desc';
       $('jobs-warnings').textContent=result.warnings.join(' ');$('jobs-warnings').hidden=!result.warnings.length;
-      $('jobs-summary').textContent='本次读取 '+result.total+' 个公开职位，筛选并匹配最多15个相关岗位。'+(typeof result.searchCalls==='number'?' 本次联网搜索调用：'+result.searchCalls+' / 3。':'');
+      $('jobs-summary').textContent='本次读取 '+result.total+' 个公开职位，筛选并匹配最多15个相关岗位。'+(typeof result.searchCalls==='number'?' 本次联网搜索调用：'+result.searchCalls+' / 3。':'')+(result.usage?' 本站累计：'+result.usage.used+' / '+result.usage.limit+' 次。':'');
       prepareJobFilters();renderPreferences();
       renderJobs();
       showStep(3);

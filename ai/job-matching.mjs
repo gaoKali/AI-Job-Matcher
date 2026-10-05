@@ -49,4 +49,4 @@ export function validateMatches(result,jobs){
   if(!matches.length)throw contract.failure('INVALID_SCHEMA');
   return {matches};
 }
-export async function matchJobs(input,env,fetcher=fetch){return requestStructured({systemPrompt:MATCH_PROMPT,input,schema:MATCH_SCHEMA,name:'job_matching',maxTokens:6000,allowNetworkFallback:false,validate:r=>validateMatches(r,input.jobs)},env,fetcher);}
+export async function matchJobs(input,env,fetcher=fetch){return requestStructured({systemPrompt:MATCH_PROMPT,input,schema:MATCH_SCHEMA,name:'job_matching',maxTokens:6000,allowNetworkFallback:false,preferSharedBeijing:true,validate:r=>validateMatches(r,input.jobs)},env,fetcher);}

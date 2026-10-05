@@ -28,6 +28,9 @@ export async function requestStructured(task, env, fetcher = fetch, timeoutMs = 
   catch { throw contract.failure('NOT_CONFIGURED'); }
   if (base.protocol !== 'https:' || base.username || base.password || base.search || base.hash) throw contract.failure('NOT_CONFIGURED');
   if (base.hostname.endsWith('.maas.aliyuncs.com') && base.pathname === '/') base.pathname = '/compatible-mode/v1';
+  // One job batch uses the already-supported Beijing shared endpoint directly, avoiding two model attempts.
+  // This does not change the stored workspace URL or the resume-analysis route.
+  if (task.preferSharedBeijing === true && /\.cn-beijing\.maas\.aliyuncs\.com$/.test(base.hostname)) base = new URL(BEIJING_FALLBACK);
   const model = env.AI_MODEL || 'qwen3.8-flash';
   const body = {
     model, messages: [{ role: 'system', content: task.systemPrompt }, { role: 'user', content: JSON.stringify(task.input) }],

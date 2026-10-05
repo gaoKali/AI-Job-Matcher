@@ -26,3 +26,7 @@
 
 ## 第5步最新最终边界
 最新用户要求实时百炼WebSearch MCP三平台搜索，不继续固定国内公司库方案。参考docs/WEBSEARCH_MCP.md。FREE_MODE=true，WEBSEARCH_ENABLED=false；不确认上游免费保护时绝不执行MCP，也不虚构free_only参数。不得将FREE_MODE切为false规避用户零费用要求。开通待本人操作；不要求新Key、不读/改AI_API_KEY或AI_BASE_URL；不做Agent。
+
+
+## 最新授权：本人已开通，1500次持久安全上限
+用户授权启用WebSearch MCP；FREE_MODE=true，WEBSEARCH_ENABLED=true，必须通过持久SearchBudget事务先预留后调用，最多累计1500，不重置、不退失败次数。新优先依据ai/search-budget.mjs与docs/WEBSEARCH_MCP.md最后记录，覆盖之前未开通禁用状态。不修改已有Secret/Base URL，不新建Worker，不自动用付费搜索。

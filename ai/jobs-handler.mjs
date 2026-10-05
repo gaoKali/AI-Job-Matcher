@@ -2,6 +2,7 @@ import '../js/job-sources.js';
 import '../js/analysis-contract.js';
 import {readLimited,permit} from './handler.mjs';
 import {matchingInput,matchJobs} from './job-matching.mjs';
+import {budgetRequest} from './search-budget.mjs';
 import {searchPublicJobs} from './websearch.mjs';
 const sources=globalThis.JobSources,contract=globalThis.AnalysisContract;
 function cors(request,env){
@@ -15,6 +16,7 @@ export async function handleJobs(request,env,ctx={},fetcher=fetch){
   const c=cors(request,env),requestId=crypto.randomUUID();c.headers['X-Request-ID']=requestId;
   const send=(status,data)=>new Response(JSON.stringify(data),{status,headers:c.headers});
   const error=(status,code)=>send(status,{error:{code,message:contract.messages[code]||'公开岗位暂时不可访问，请稍后重试。',requestId}});
+  if(new URL(request.url).pathname==='/api/jobs/search-usage'&&request.method==='GET'){try{return send(200,await budgetRequest(env,'/usage'));}catch{return send(503,{error:{code:'SEARCH_COUNTER_UNAVAILABLE'}});}}
   if(!c.allowed)return error(403,'ACCESS_DENIED');
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:c.headers});
   const pathname=new URL(request.url).pathname;
