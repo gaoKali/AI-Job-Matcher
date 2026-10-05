@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#146b60">
+  <title>向前 · 简历分析与岗位匹配</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="js/providers.js" defer></script>
+  <script src="js/parser-core.js" defer></script>
+  <script src="js/resume-parser.js" defer></script>
+  <script src="js/analysis-contract.js" defer></script>
+  <script src="js/analysis-config.js" defer></script>
+  <script src="js/analysis-provider.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header"><div class="header-inner">
+    <a class="brand" href="index.html" aria-label="向前，返回首页"><span class="brand-mark" aria-hidden="true">↗</span><span>向前<span class="brand-sub">JOB MATCHER</span></span></a>
+    <span class="mode-badge"><span class="status-dot"></span><span id="analysis-mode">AI 简历分析 · 岗位演示</span></span>
+  </div></header>
+  <main class="page-shell">
+    <section class="hero" aria-labelledby="hero-title">
+      <div><p class="eyebrow">你的下一步，从了解自己开始</p><h1 id="hero-title">看清你的优势，<br>找到适合的下一站<span class="accent">。</span></h1><p class="hero-description">从一份简历出发，梳理职业方向，<br class="desktop-break">让每一次求职选择都有依据。</p></div>
+      <div class="hero-note"><div class="note-icon" aria-hidden="true">✦</div><p class="eyebrow">一条更清晰的求职路径</p><p class="note-title">认识自己 → 明确目标 → 发现机会</p><p>不用重复整理材料。沿着三个步骤，体验从简历到岗位的完整流程。</p><span class="note-foot">简历由 AI 分析；岗位暂为模拟数据</span></div>
+    </section>
+    <div class="privacy-banner"><span class="privacy-icon" aria-hidden="true">✓</span><div><strong>简历仅用于本次分析，不在本站永久存储。</strong><span>点击分析后，简历文本会发送给 AI 服务处理；原始文件不上传。请先移除不愿分享的信息。本站内存数据可通过刷新或重新上传清除。</span></div></div>
+    <nav class="steps" aria-label="求职流程">
+      <button type="button" class="step active" data-step="1" aria-current="step"><span class="step-number">01</span><span><strong>准备简历</strong><small>上传文件或粘贴文本</small></span></button>
+      <button type="button" class="step" data-step="2" disabled><span class="step-number">02</span><span><strong>了解你的优势</strong><small>查看分析，填写求职需求</small></span></button>
+      <button type="button" class="step" data-step="3" disabled><span class="step-number">03</span><span><strong>发现匹配岗位</strong><small>对比机会与能力差距</small></span></button>
+    </nav>
+
+    <section id="step-1" class="step-panel" aria-labelledby="upload-title">
+      <div class="section-heading"><div><p class="eyebrow">STEP 01 · 准备简历</p><h2 id="upload-title" tabindex="-1">先告诉我们，你有哪些经历</h2><p>选择一种方式开始。无需注册，也无需配置任何服务。</p></div><span class="quiet-label">预计 2 分钟</span></div>
+      <div class="upload-layout">
+        <form id="resume-form" class="card resume-card">
+          <div class="input-methods" aria-label="简历输入方式"><button type="button" class="method active" id="file-method" aria-pressed="true">上传简历</button><button type="button" class="method" id="text-method" aria-pressed="false">粘贴文本</button></div>
+          <div id="file-panel">
+            <label class="drop-zone" id="drop-zone" for="resume-file"><span class="upload-symbol" aria-hidden="true">↑</span><strong>点击选择，或将简历拖到这里</strong><span>支持 PDF、DOCX · 文件不超过 10 MB</span><span class="file-choice">选择简历文件</span></label>
+            <input type="file" id="resume-file" class="file-input" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" aria-label="选择 PDF 或 DOCX 简历">
+            <div id="file-summary" class="file-summary" hidden><span class="file-glyph" aria-hidden="true">▤</span><div><strong id="file-name"></strong><small id="file-size"></small></div><button type="button" class="text-button" id="remove-file">重新上传</button></div>
+            <p class="inline-note">PDF / DOCX 在浏览器本地读取，不上传文件。暂不支持扫描件 OCR；读取后可展开核对文字。AI 单次分析最多 12,000 个字符。</p>
+          </div>
+          <div id="text-panel" hidden><label for="resume-text" class="field-label">简历文本</label><textarea id="resume-text" rows="11" maxlength="150000" placeholder="在这里粘贴工作经历、项目、技能和教育背景……"></textarea><div class="text-meta"><span>不需要填写电话、邮箱等联系方式</span><span id="text-count">0 / 150000</span></div></div>
+          <div id="read-status" class="read-status" role="status" aria-live="polite" hidden><strong id="read-status-title"></strong><span id="read-status-detail"></span></div>
+          <p id="read-warning" class="inline-note" hidden></p>
+          <button type="button" class="text-button" id="toggle-preview" aria-expanded="false" aria-controls="extracted-preview" hidden>查看提取内容</button>
+          <div id="extracted-preview" class="extracted-preview" hidden><p>真实读取的简历纯文本 · 请核对完整性和阅读顺序</p><pre id="extracted-text"></pre><small>若顺序不准确，可复制文字，在“粘贴文本”中校对后继续。</small></div>
+          <div class="demo-invite"><span>还没准备好简历？</span><button type="button" class="text-button" id="use-example">试用示例简历 ↗</button></div>
+          <button type="button" class="text-button" id="check-ai-connection" hidden>检查 AI 连接（不消耗额度）</button>
+          <p class="inline-note" id="ai-connection-status" role="status" hidden></p>
+          <p id="resume-error" class="error-message" role="alert" hidden></p>
+          <div id="analysis-loading" class="read-status analysis-loading" role="status" aria-live="polite" hidden><strong id="analysis-loading-text">正在分析你的简历……</strong><span>通常需要片刻。无需再次点击；最多等待约一分钟。</span></div>
+          <button class="button primary full-width" type="submit" id="analyze-button">进入简历分析 <span aria-hidden="true">→</span></button>
+          <p class="button-caption">仅分析你提供的简历。请核对 AI 结果，不足之处仅补充真实信息。</p>
+        </form>
+        <aside class="guide-card"><span class="guide-tag">你将获得</span><h3>不止是一个分数，<br>更是明确的下一步。</h3><ol class="benefits"><li><span>01</span><div><strong>一份清晰的个人画像</strong><p>梳理技能、经验与教育背景。</p></div></li><li><span>02</span><div><strong>可行动的改进方向</strong><p>理解简历优势与需要补充的信息。</p></div></li><li><span>03</span><div><strong>有理由的岗位推荐</strong><p>看见匹配点，也看见主要差距。</p></div></li></ol><div class="guide-bottom">先了解，再选择。<br><strong>把求职的主动权拿回来。</strong></div></aside>
+      </div>
+    </section>
+
+    <section id="step-2" class="step-panel" aria-labelledby="analysis-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">STEP 02 · 简历分析</p><h2 id="analysis-title" tabindex="-1">让经历，变成清晰的方向</h2><p id="resume-origin"></p></div><button type="button" class="button secondary reset-resume">重新上传简历</button></div>
+      <div class="demo-notice" id="analysis-notice"></div>
+      <div id="analysis-content"></div>
+      <form id="preferences-form" class="card preferences-card">
+        <div class="section-heading compact"><div><p class="eyebrow">把你的期待告诉我们</p><h2>什么样的机会，更适合你？</h2><p>填写你关心的条件。留空表示暂不限制。</p></div></div>
+        <div class="form-grid">
+          <div class="field"><label for="target-role">目标岗位</label><input id="target-role" name="role" maxlength="80" placeholder="例如：产品经理、用户运营"></div>
+          <div class="field"><label for="target-city">目标城市</label><input id="target-city" name="city" maxlength="80" placeholder="例如：上海、杭州"></div>
+          <div class="field"><label for="target-industry">目标行业</label><input id="target-industry" name="industry" maxlength="80" placeholder="例如：互联网、企业服务"></div>
+          <div class="field"><label for="work-mode">工作方式</label><select id="work-mode" name="workMode"><option value="">不限</option><option>现场办公</option><option>混合办公</option><option>远程办公</option></select></div>
+          <div class="field"><label for="job-level">期望岗位级别</label><select id="job-level" name="level"><option value="">不限</option><option>初级</option><option>中级</option><option>高级</option><option>管理岗</option></select></div>
+          <div class="field field-hint"><span class="small-dot"></span><p>条件越明确，越容易看清取舍。<br>模拟版仅演示匹配变化，不代表真实判断。</p></div>
+          <div class="field"><label for="must-have">必须满足的条件</label><textarea id="must-have" name="mustHave" rows="3" maxlength="500" placeholder="例如：双休、五险一金、无需出差"></textarea></div>
+          <div class="field"><label for="exclude">不考虑的条件</label><textarea id="exclude" name="exclude" rows="3" maxlength="500" placeholder="例如：外包、频繁出差、夜班"></textarea></div>
+        </div>
+        <p class="inline-note">模拟版会展示所有示例岗位，并按已选岗位、城市、行业、工作方式和级别演示评分变化。“必须满足”和“不考虑”的自由文本会保留展示，尚不自动解读或执行筛除。</p>
+        <p id="search-error" class="error-message" role="alert" hidden></p>
+        <div class="form-actions"><span class="subtle">先看机会，再调整方向。</span><button class="button primary" id="search-button" type="submit">搜索匹配岗位 <span aria-hidden="true">→</span></button></div>
+      </form>
+    </section>
+
+    <section id="step-3" class="step-panel" aria-labelledby="results-title" hidden>
+      <div class="section-heading"><div><p class="eyebrow">STEP 03 · 发现机会</p><h2 id="results-title" tabindex="-1">看看你的下一站，有哪些可能</h2><p>把匹配原因和能力差距放在一起，做更有依据的选择。</p></div><div class="heading-actions"><button type="button" class="button secondary" id="search-again">重新搜索</button><button type="button" class="text-button reset-resume">重新上传简历</button></div></div>
+      <div class="demo-notice"><strong>模拟岗位 · 公司、岗位与分数均为虚构示例，不可用于真实申请。</strong><span>分数仅用于交互演示，不表示录用概率；“查看岗位”打开本地示例详情。</span></div>
+      <div id="selected-preferences" class="selected-preferences"></div>
+      <div class="results-toolbar"><div><strong id="results-count"></strong><span class="subtle"> · 发现适合的，也看清不适合的</span></div><div class="result-controls"><label for="sort-order">排序<select id="sort-order"><option value="desc">匹配分从高到低</option><option value="asc">匹配分从低到高</option></select></label><label for="min-score">最低匹配分 <output id="score-value" for="min-score">0 分</output><input type="range" id="min-score" min="0" max="100" step="5" value="0"></label></div></div>
+      <div id="job-list" class="job-list"></div>
+      <div id="empty-results" class="card empty-state" hidden><span aria-hidden="true">⌕</span><h3>当前分数范围内，没有示例岗位</h3><p>降低最低匹配分，或重新调整求职需求。</p><button type="button" class="button secondary" id="clear-filter">清除分数筛选</button></div>
+    </section>
+    <p id="live-status" class="sr-only" role="status" aria-live="polite"></p>
+    <footer class="site-footer"><span class="footer-brand">向前 <span>每一次选择，都离目标更近一点。</span></span><span>本站不永久保存简历 · AI 处理文本 · 岗位演示</span></footer>
+  </main>
+  <dialog id="job-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span class="mode-badge">模拟岗位详情</span><button type="button" class="icon-button" id="close-dialog" aria-label="关闭岗位详情">×</button></div><div id="job-detail"></div><div class="dialog-footer"><p>这是虚构的岗位示例，没有真实申请链接。</p><button type="button" class="button primary" id="dialog-done">了解了</button></div></dialog>
+</body>
+</html>

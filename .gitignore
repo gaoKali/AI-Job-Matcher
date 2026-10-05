@@ -1,0 +1,10 @@
+.env
+.env.*
+.dev.vars
+.dev.vars.*
+.wrangler/
+.worker-check/
+node_modules/
+*.log
+!*.example
+/简历分析和求职方向 Skill.zip
