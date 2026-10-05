@@ -8,3 +8,5 @@ node_modules/
 *.log
 !*.example
 /简历分析和求职方向 Skill.zip
+
+.source-audit/

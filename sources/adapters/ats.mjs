@@ -1,0 +1,3 @@
+import '../../js/job-sources.js';import {job} from '../common.mjs';const core=globalThis.JobCore;
+export function build(source){return source.apiUrl;}
+export function parse(source,text){const data=JSON.parse(text);if(source.adapter==='greenhouse')for(const j of data.jobs||[])if(/^(Hybrid|Remote|Onsite)$/i.test(j.location?.name||''))j.location.name=(j.offices||[]).map(o=>o.name).filter(Boolean).join(' / ')||'未公开';const old={...source,source:source.adapter==='greenhouse'?'Greenhouse':source.adapter==='lever'?'Lever':'Ashby'};return core.normalizeBoard(old,data).map(j=>job(source,{...j,city:j.location})).filter(Boolean);}

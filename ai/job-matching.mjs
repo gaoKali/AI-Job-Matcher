@@ -1,3 +1,4 @@
+import '../js/source-registry.js';
 import '../js/analysis-contract.js';
 import '../js/job-core.js';
 import '../js/job-sources.js';
@@ -22,14 +23,15 @@ export function matchingInput(body){
   for(const key of Object.keys(preferences))preferences[key]=contract.redact(core.plain(preferences[key]));
   if(!Array.isArray(body.jobs)||!body.jobs.length||body.jobs.length>15)throw contract.failure('BAD_REQUEST');
   const seen=new Set();const jobs=body.jobs.map(job=>{
+    const publicSource=globalThis.PublicSources.find(s=>s.enabled&&s.status==='working'&&job?.id?.startsWith(s.key+':')&&job.source===s.name&&s.jobHosts?.includes(new URL(core.safeUrl(job?.url)||'https://invalid.invalid').hostname));
     const source=sources.find(s=>job?.id?.startsWith(s.key+':')&&job.source===s.source&&job.company===s.company);
     const url=core.safeUrl(job?.url);
     const platform=web.sourceFor(url);const searchJob=job?.source===platform?.source&&web.isJobUrl(url)&&job.id===web.idFor(url);
-    if((!source&&!searchJob)||!url||seen.has(job.id)||typeof job.title!=='string'||!job.title.trim()||typeof job.description!=='string'||typeof job.location!=='string')throw contract.failure('BAD_REQUEST');
+    if((!source&&!searchJob&&!publicSource)||!url||seen.has(job.id)||typeof job.title!=='string'||!job.title.trim()||typeof job.description!=='string'||typeof job.location!=='string')throw contract.failure('BAD_REQUEST');
     const host=new URL(url).hostname;
-    const valid=searchJob||(source.source==='Lever'?host==='jobs.lever.co':source.source==='Ashby'?host==='jobs.ashbyhq.com':['boards.greenhouse.io','job-boards.greenhouse.io',source.key+'.com','www.'+source.key+'.com'].includes(host));
+    const valid=Boolean(publicSource)||searchJob||(source.source==='Lever'?host==='jobs.lever.co':source.source==='Ashby'?host==='jobs.ashbyhq.com':['boards.greenhouse.io','job-boards.greenhouse.io',source.key+'.com','www.'+source.key+'.com'].includes(host));
     if(!valid||job.id.length>160)throw contract.failure('BAD_REQUEST');seen.add(job.id);
-    return {id:job.id,company:source?source.company:core.plain(job.company||'未公开').slice(0,200),title:core.plain(job.title).slice(0,200),location:core.plain(job.location).slice(0,400),description:core.plain(job.description).slice(0,searchJob?1500:1800),salary:core.plain(job.salary||'未公开').slice(0,80),experience:core.plain(job.experience||'未公开').slice(0,80),education:core.plain(job.education||'未公开').slice(0,80),searchSummaryOnly:searchJob,url,source:source?source.source:platform.source,publishedAt:typeof job.publishedAt==='string'?job.publishedAt.slice(0,40):null,workMode:core.mode(job.workMode),descriptionTruncated:job.descriptionTruncated===true||job.description.length>(searchJob?1500:1800)};
+    return {id:job.id,company:publicSource?core.plain(job.company||publicSource.company||'未公开').slice(0,200):source?source.company:core.plain(job.company||'未公开').slice(0,200),title:core.plain(job.title).slice(0,200),location:core.plain(job.location).slice(0,400),description:core.plain(job.description).slice(0,searchJob?1500:1800),salary:core.plain(job.salary||'未公开').slice(0,80),experience:core.plain(job.experience||'未公开').slice(0,80),education:core.plain(job.education||'未公开').slice(0,80),searchSummaryOnly:searchJob,url,source:publicSource?publicSource.name:source?source.source:platform.source,publishedAt:typeof job.publishedAt==='string'?job.publishedAt.slice(0,40):null,workMode:core.mode(job.workMode),descriptionTruncated:job.descriptionTruncated===true||job.description.length>(searchJob?1500:1800)};
   });
   return {profile,preferences,jobs};
 }

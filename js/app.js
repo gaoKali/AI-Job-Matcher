@@ -205,14 +205,14 @@
   }
   function renderJobs() {
     const minimum=Number($('min-score').value);
-    const visible=window.JobCore.filter(state.jobs,{minimum,order:$('sort-order').value,company:$('filter-company').value,city:$('filter-city').value,source:$('filter-source').value});
+    const visible=window.JobCore.filter(state.jobs,{minimum,order:$('sort-order').value,company:$('filter-company').value,city:$('filter-city').value,source:$('filter-source').value,sourceType:$('filter-type').value});
     $('score-value').value=minimum+' 分';
     $('results-count').textContent=visible.length+' 个真实岗位 / 共 '+state.jobs.length+' 个候选';
     $('empty-results').hidden=visible.length!==0;
     $('job-list').innerHTML=visible.map(job=>{
       const scored=Number.isFinite(job.matchScore),url=window.JobCore.safeUrl(job.url);
       const row=(title,values)=>'<div class="reason-row"><span class="reason-icon" aria-hidden="true">'+(title==='主要差距'?'△':'✓')+'</span><div><strong>'+title+'</strong><p>'+values.map(escape).join(' ')+'</p></div></div>';
-      return '<article class="card job-card"><div class="job-top"><div><div class="company-icon" aria-hidden="true">'+escape(job.company.slice(0,1))+'</div><h3>'+escape(job.title)+'</h3><p class="company-name">'+escape(job.company)+'</p></div><div class="score '+(scored&&job.matchScore<80?'medium':'')+'"><strong>'+(scored?job.matchScore:'—')+'</strong><span>'+(scored?'AI匹配分':'暂未评分')+'</span></div></div><div class="job-meta"><span>'+escape(job.location)+'</span><span>'+escape(job.workMode)+'</span><span>'+escape(job.source)+'</span><span>薪资：'+escape(job.salary||'未公开')+'</span><span>经验：'+escape(job.experience||'未公开')+'</span><span>学历：'+escape(job.education||'未公开')+'</span><span>置信度：'+escape(job.confidence||'低')+'</span></div><div class="job-reasons">'+row('匹配原因',job.matchReasons.length?job.matchReasons:['尚未取得AI匹配结果，请核对原始JD。'])+row('主要差距',job.gaps.length?job.gaps:['暂未识别具体差距，请结合JD核实。'])+row('申请建议',[job.recommendation])+ (job.resumeTips.length?row('简历重点',job.resumeTips)+'<p class="inline-note">仅在有真实经历时补充；不要填写未掌握的技能、虚构项目或成果。</p>':'')+'</div><details class="job-description"><summary>查看 JD 摘要</summary><p>'+escape(job.description||'公开接口未提供详细JD，请查看原始岗位。')+'</p></details><div class="job-footer"><span class="job-source">来源：'+escape(job.source)+(job.publishedAt?' · '+escape(job.publishedAt.slice(0,10)):' · 发布日期未提供')+'</span>'+(url?'<a class="button secondary" href="'+escape(url)+'" target="_blank" rel="noopener noreferrer">查看原岗位 ↗</a>':'<span>申请链接暂不可用</span>')+'</div></article>';
+      return '<article class="card job-card"><div class="job-top"><div><div class="company-icon" aria-hidden="true">'+escape(job.company.slice(0,1))+'</div><h3>'+escape(job.title)+'</h3><p class="company-name">'+escape(job.company)+'</p></div><div class="score '+(scored&&job.matchScore<80?'medium':'')+'"><strong>'+(scored?job.matchScore:'—')+'</strong><span>'+(scored?'AI匹配分':'暂未评分')+'</span></div></div><div class="job-meta"><span>'+escape(job.location)+'</span><span>'+escape(job.workMode)+'</span><span>'+escape(job.source)+'</span><span>'+escape(job.sourceType==='job_board'?'招聘平台':job.sourceType==='company_career'?'公司官网':'公司 ATS')+'</span><span>薪资：'+escape(job.salary||'未公开')+'</span><span>经验：'+escape(job.experience||'未公开')+'</span><span>学历：'+escape(job.education||'未公开')+'</span><span>置信度：'+escape(job.confidence||'低')+'</span></div><div class="job-reasons">'+row('匹配原因',job.matchReasons.length?job.matchReasons:['尚未取得AI匹配结果，请核对原始JD。'])+row('主要差距',job.gaps.length?job.gaps:['暂未识别具体差距，请结合JD核实。'])+row('申请建议',[job.recommendation])+ (job.resumeTips.length?row('简历重点',job.resumeTips)+'<p class="inline-note">仅在有真实经历时补充；不要填写未掌握的技能、虚构项目或成果。</p>':'')+'</div><details class="job-description"><summary>查看 JD 摘要</summary><p>'+escape(job.description||'公开接口未提供详细JD，请查看原始岗位。')+'</p></details><div class="job-footer"><span class="job-source">来源：'+escape(job.source)+(job.publishedAt?' · '+escape(job.publishedAt.slice(0,10)):' · 发布日期未提供')+'</span>'+(url?'<a class="button secondary" href="'+escape(url)+'" target="_blank" rel="noopener noreferrer">查看原岗位 ↗</a>':'<span>申请链接暂不可用</span>')+'</div></article>';
     }).join('');
     announce('显示 '+visible.length+' 个真实岗位，最低匹配分 '+minimum+' 分。');
   }
@@ -295,8 +295,8 @@
       $('min-score').value = '0';
       $('sort-order').value = 'desc';
       $('jobs-warnings').textContent=result.warnings.join(' ');$('jobs-warnings').hidden=!result.warnings.length;
-      $('jobs-summary').textContent='本次读取 '+result.total+' 个公开职位，筛选并匹配最多15个相关岗位。'+(typeof result.searchCalls==='number'?' 本次联网搜索调用：'+result.searchCalls+' / 3。':'')+(result.usage?' 本站累计：'+result.usage.used+' / '+result.usage.limit+' 次。':'');
-      prepareJobFilters();renderPreferences();
+      $('jobs-summary').textContent='本次从 '+(result.availableSources||0)+' 个可用来源发现 '+result.total+' 个公开职位，为你筛选出 '+result.jobs.length+' 个推荐岗位。'+(result.cacheHits?' 已使用 '+result.cacheHits+' 个来源缓存。':'');
+      prepareJobFilters();renderPreferences();$('manual-sources').innerHTML='<p>以下平台暂不能自动读取，入口不计入岗位数量：</p>'+window.PublicSources.filter(s=>s.type==='job_board'&&!s.enabled).map(s=>'<a href="'+escape(s.careerUrl)+'" target="_blank" rel="noopener noreferrer">打开'+escape(s.name)+'</a>').join(' · ');
       renderJobs();
       showStep(3);
     } catch(error) { if(generation===state.generation&&error.code!=='CANCELLED')displayError('search-error','公开岗位搜索暂时失败，请稍后重试。'); }
@@ -304,8 +304,8 @@
   });
   $('sort-order').addEventListener('change', renderJobs);
   $('min-score').addEventListener('input', renderJobs);
-  $('clear-filter').addEventListener('click', () => { $('min-score').value = '0'; for(const id of ['filter-company','filter-city','filter-source'])$(id).value=''; renderJobs(); });
-  for(const id of ['filter-company','filter-city','filter-source'])$(id).addEventListener('change',renderJobs);
+  $('clear-filter').addEventListener('click', () => { $('min-score').value = '0'; for(const id of ['filter-company','filter-city','filter-source','filter-type'])$(id).value=''; renderJobs(); });
+  for(const id of ['filter-company','filter-city','filter-source','filter-type'])$(id).addEventListener('change',renderJobs);
   $('job-list').addEventListener('click', event => { const button = event.target.closest('.view-job'); if (button) showJob(button.dataset.jobId); });
   $('close-dialog').addEventListener('click', () => $('job-dialog').close());
   $('dialog-done').addEventListener('click', () => $('job-dialog').close());

@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-05T13:14:46.943Z",
+  "preferences": {
+    "role": "数据分析师",
+    "city": "上海",
+    "industry": "互联网",
+    "exclude": "不考虑销售"
+  },
+  "worker": "https://ai-job-matcher-api.gaoweishmily.workers.dev",
+  "version": "8b5d2497-8044-40a1-8319-5910381a7360",
+  "availableSources": 22,
+  "total": 2,
+  "cacheHits": 14,
+  "websearchCalls": 0,
+  "qwenBatchCalls": 1,
+  "syntheticProfileOnly": true,
+  "consoleErrors": 0,
+  "urlsOpenedAndVerified": true,
+  "jobs": [
+    {
+      "title": "Senior Consultant - Data Science & Analytics",
+      "company": "Sia",
+      "city": "Shanghai, China",
+      "source": "SmartRecruiters",
+      "url": "https://jobs.smartrecruiters.com/Sia/744000138017305-senior-consultant-data-science-analytics",
+      "matchScore": 45
+    },
+    {
+      "title": "智能驾驶数据科学家_CR",
+      "company": "Bosch Group",
+      "city": "Shanghai, China",
+      "source": "SmartRecruiters",
+      "url": "https://jobs.smartrecruiters.com/BoschGroup/744000082393827--cr",
+      "matchScore": 25
+    }
+  ]
+}

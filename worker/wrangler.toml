@@ -6,7 +6,7 @@ keep_vars = true
 
 [vars]
 FREE_MODE = "true"
-WEBSEARCH_ENABLED = "true"
+WEBSEARCH_ENABLED = "false"
 # FREE_MODE uses the global durable 1500-call safety budget; never resets on deploy.
 AI_MODEL = "qwen3.8-flash"
 # AI_BASE_URL is managed in the dashboard and preserved by keep_vars.

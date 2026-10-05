@@ -30,3 +30,10 @@
 
 ## 最新授权：本人已开通，1500次持久安全上限
 用户授权启用WebSearch MCP；FREE_MODE=true，WEBSEARCH_ENABLED=true，必须通过持久SearchBudget事务先预留后调用，最多累计1500，不重置、不退失败次数。新优先依据ai/search-budget.mjs与docs/WEBSEARCH_MCP.md最后记录，覆盖之前未开通禁用状态。不修改已有Secret/Base URL，不新建Worker，不自动用付费搜索。
+
+## 最新第5步授权（直接公开读取）
+用户要求MCP默认关闭，保留代码和原计数。公开来源先审计后接入；禁止逆向私有API、Cookie登录和访问限制绕过。新增来源允许公开HTML/JSON-LD/官方API，固定请求总额、隔离失败、缓存只存公开职位；继续部署同一Worker。
+
+
+## 2026-10-05 最新第5步：直接公开职位采集（覆盖之前MCP优先方案）
+WEBSEARCH_ENABLED=false，保留MCP与已有ATS代码，不重置计数。采用独立来源注册表、公司seed、公开适配器；30家公司登记、22个ATS公司源通过，国内平台自动读取受限，普通入口不计岗位。45分钟公开职位缓存、并发3、HTTP24/含缓存48总额、15岗一次Qwen批量匹配、失败隔离。当前上海数据相关实测2岗，Qwen一次评分成功；74项离线测试通过，同一Worker最终版本8b5d2497-8044-40a1-8319-5910381a7360。细节见docs/JOB_SOURCE_AUDIT.md与docs/direct-source-live-result.json。未完成国内广泛覆盖及15种平台目标，不得宣称已完成；不继续Agent/Pages/登录/数据库。

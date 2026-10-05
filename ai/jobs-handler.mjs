@@ -1,3 +1,4 @@
+import {collectPublicJobs} from '../sources/service.mjs';
 import '../js/job-sources.js';
 import '../js/analysis-contract.js';
 import {readLimited,permit} from './handler.mjs';
@@ -20,6 +21,10 @@ export async function handleJobs(request,env,ctx={},fetcher=fetch){
   if(!c.allowed)return error(403,'ACCESS_DENIED');
   if(request.method==='OPTIONS')return new Response(null,{status:204,headers:c.headers});
   const pathname=new URL(request.url).pathname;
+  if(pathname==='/api/jobs/public-search'){
+    if(request.method!=='POST'||!request.headers.get('Content-Type')?.startsWith('application/json'))return error(400,'BAD_REQUEST');
+    try{const body=await readLimited(request,12000);if(!body||Object.keys(body).some(k=>k!=='preferences'))return error(400,'BAD_REQUEST');const preferences=globalThis.JobCore.preferences(body.preferences);for(const k of Object.keys(preferences))preferences[k]=contract.redact(globalThis.JobCore.plain(preferences[k]));if(!permit('direct:'+request.headers.get('CF-Connecting-IP')))return error(429,'RATE_LIMIT');return send(200,await collectPublicJobs(preferences,{fetcher}));}catch{return error(400,'BAD_REQUEST');}
+  }
   if(pathname==='/api/jobs/search'){
     if(request.method!=='POST'||!request.headers.get('Content-Type')?.startsWith('application/json'))return error(400,'BAD_REQUEST');
     try{const body=await readLimited(request,12000);if(!body||Object.keys(body).some(k=>k!=='preferences'))return error(400,'BAD_REQUEST');const preferences=globalThis.JobCore.preferences(body.preferences);for(const key of Object.keys(preferences))preferences[key]=contract.redact(globalThis.JobCore.plain(preferences[key]));if(!permit('search:'+(request.headers.get('CF-Connecting-IP')||'local')))return error(429,'RATE_LIMIT');const result=await searchPublicJobs(preferences,env,fetcher);console.info(JSON.stringify({event:'public-search',requestId,searchCalls:result.searchCalls,status:result.status,count:result.jobs.length}));return send(200,result);}catch{return error(400,'BAD_REQUEST');}

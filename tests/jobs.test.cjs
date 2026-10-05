@@ -14,13 +14,13 @@ test('10家独立公开源使用官方URL；三平台统一字段、真实链接
 });
 
 test('城市/中英岗位筛选保留远程混合与China/APAC，排除销售岗位但保留Sales Analyst和协作销售的分析师',()=>{
- const base=job();const jobs=[base,{...base,id:'onsite',url:base.url+'?id=2',location:'New York',workMode:'现场办公'},{...base,id:'remote',url:base.url+'?id=3',location:'Remote US',workMode:'远程办公'},{...base,id:'sales',url:base.url+'?id=4',title:'Sales Analyst'},{...base,id:'wrong',url:base.url+'?id=5',title:'Frontend Engineer',description:'React'},{...base,id:'hybrid',url:base.url+'?id=6',location:'APAC Multiple locations',workMode:'混合办公'}];
+ const base=job();const jobs=[base,{...base,id:'onsite',url:base.url+'?id=2',location:'New York',workMode:'现场办公'},{...base,id:'remote',url:base.url+'?id=3',location:'Remote China',workMode:'远程办公'},{...base,id:'sales',url:base.url+'?id=4',title:'Sales Analyst'},{...base,id:'wrong',url:base.url+'?id=5',title:'Frontend Engineer',description:'React'},{...base,id:'hybrid',url:base.url+'?id=6',location:'APAC Multiple locations',workMode:'混合办公'}];
  const result=core.shortlist(jobs,{role:'数据分析师',city:'上海',exclude:'不考虑销售'},analysis,10);assert.deepEqual(result.map(j=>j.id),[base.id,'hybrid','remote','sales']);assert.ok(result[1].screeningNotes.some(s=>s.includes('签证')));
  assert.equal(core.shortlist(jobs,{role:'不存在的岗位'},analysis).length,0);
 });
 
 test('去重、最多10个、未注明条件不编造、最低分/来源/公司/地区/排序',()=>{
- const base=job();const candidates=Array.from({length:20},(_,i)=>({...base,id:'id'+i,url:base.url+'?id='+i}));assert.equal(core.shortlist([...candidates,candidates[0]],{},analysis,10).length,10);
+ const base=job();const candidates=Array.from({length:20},(_,i)=>({...base,id:'id'+i,title:'Data Analyst '+i,url:base.url+'?id='+i}));assert.equal(core.shortlist([...candidates,candidates[0]],{},analysis,10).length,10);
  const results=[{...base,matchScore:50},{...base,id:'b',company:'Other',matchScore:90},{...base,id:'c',matchScore:null}];assert.deepEqual(core.filter(results).map(j=>j.matchScore),[90,50,null]);assert.deepEqual(core.filter(results,{order:'asc'}).map(j=>j.matchScore),[50,90,null]);assert.equal(core.filter(results,{minimum:60,company:'Other',source:'Greenhouse',city:'Shanghai'}).length,1);assert.equal(core.filter(results,{minimum:5}).length,2);assert.equal(results[0].matchScore,50);
  assert.ok(core.shortlist([{...base,description:''}],{mustHave:'双休'},analysis)[0].screeningNotes.some(n=>n.includes('未在JD')));
 });

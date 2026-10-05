@@ -17,6 +17,8 @@
   <script src="js/job-core.js" defer></script>
   <script src="js/websearch-core.js" defer></script>
   <script src="js/jobs-provider.js" defer></script>
+  <script src="js/source-registry.js" defer></script>
+  <script src="js/public-jobs-provider.js" defer></script>
   <script src="js/app.js" defer></script>
 </head>
 <body>
@@ -80,7 +82,7 @@
           <div class="field"><label for="must-have">必须满足的条件</label><textarea id="must-have" name="mustHave" rows="3" maxlength="500" placeholder="例如：双休、五险一金、无需出差"></textarea></div>
           <div class="field"><label for="exclude">不考虑的条件</label><textarea id="exclude" name="exclude" rows="3" maxlength="500" placeholder="例如：外包、频繁出差、夜班"></textarea></div>
         </div>
-        <p class="inline-note">从 10 家公司的公开源读取职位，先按关键词和城市筛选，再一次批量匹配最多 10 个岗位。中英文常见岗位关键词可关联；远程不代表全球可工作，地区与必须条件请核对 JD。</p>
+        <p class="inline-note">从已验证的公开招聘源读取职位，先按关键词和城市筛选，再一次批量匹配最多 15 个岗位。中英文常见岗位关键词可关联；远程不代表全球可工作，地区与必须条件请核对 JD。</p>
         <div id="jobs-loading" class="read-status" role="status" aria-live="polite" hidden><strong id="jobs-loading-text">正在读取公开岗位……</strong><span>先筛选，再一次批量匹配。无需重复点击。</span></div>
         <p id="search-error" class="error-message" role="alert" hidden></p>
         <div class="form-actions"><span class="subtle">先看机会，再调整方向。</span><button class="button primary" id="search-button" type="submit">搜索匹配岗位 <span aria-hidden="true">→</span></button></div>
@@ -89,11 +91,12 @@
 
     <section id="step-3" class="step-panel" aria-labelledby="results-title" hidden>
       <div class="section-heading"><div><p class="eyebrow">STEP 03 · 发现机会</p><h2 id="results-title" tabindex="-1">看看你的下一站，有哪些可能</h2><p>把匹配原因和能力差距放在一起，做更有依据的选择。</p></div><div class="heading-actions"><button type="button" class="button secondary" id="search-again">重新搜索</button><button type="button" class="text-button reset-resume">重新上传简历</button></div></div>
-      <div class="demo-notice"><strong>真实公开岗位 · 实时搜索与免费补充</strong><span>岗位信息来自公开互联网搜索结果，请以招聘平台原页面最新信息为准。匹配分不表示录用概率；信息不足会降低置信度，未取得 AI 结果标为暂未评分。</span></div><p id="jobs-summary" class="inline-note"></p><p class="inline-note"><a href="https://ai-job-matcher-api.gaoweishmily.workers.dev/api/jobs/search-usage" target="_blank" rel="noopener noreferrer">查看免费搜索累计次数（安全上限 1,500 次）</a></p><div id="jobs-warnings" class="read-status" role="status" hidden></div>
+      <div class="demo-notice"><strong>真实公开岗位 · 实时搜索与免费补充</strong><span>岗位信息来自公开招聘页面和官方 ATS，请以招聘平台原页面最新信息为准。匹配分不表示录用概率；信息不足会降低置信度，未取得 AI 结果标为暂未评分。</span></div><p id="jobs-summary" class="inline-note"></p><p class="inline-note"><a href="https://ai-job-matcher-api.gaoweishmily.workers.dev/api/jobs/search-usage" target="_blank" rel="noopener noreferrer">查看免费搜索累计次数（安全上限 1,500 次）</a></p><div id="jobs-warnings" class="read-status" role="status" hidden></div>
       <div id="selected-preferences" class="selected-preferences"></div>
       <div class="results-toolbar"><div><strong id="results-count"></strong><span class="subtle"> · 发现适合的，也看清不适合的</span></div><div class="result-controls"><label for="sort-order">排序<select id="sort-order"><option value="desc">匹配分从高到低</option><option value="asc">匹配分从低到高</option></select></label><label for="min-score">最低匹配分 <output id="score-value" for="min-score">0 分</output><input type="range" id="min-score" min="0" max="100" step="5" value="0"></label></div></div>
-      <div class="job-filters"><label for="filter-company">公司<select id="filter-company"><option value="">全部公司</option></select></label><label for="filter-city">城市 / 地区<select id="filter-city"><option value="">全部城市</option></select></label><label for="filter-source">岗位来源<select id="filter-source"><option value="">全部来源</option></select></label></div>
-      <div id="job-list" class="job-list"></div>
+      <div class="job-filters"><label for="filter-company">公司<select id="filter-company"><option value="">全部公司</option></select></label><label for="filter-city">城市 / 地区<select id="filter-city"><option value="">全部城市</option></select></label><label for="filter-type">来源类型<select id="filter-type"><option value="">全部</option><option value="job_board">招聘平台</option><option value="company_career">公司官网 / ATS</option></select></label><label for="filter-source">岗位来源<select id="filter-source"><option value="">全部来源</option></select></label></div>
+      <div id="manual-sources" class="inline-note"></div>
+<div id="job-list" class="job-list"></div>
       <div id="empty-results" class="card empty-state" hidden><span aria-hidden="true">⌕</span><h3>暂时没有找到符合条件的公开岗位</h3><p>可以尝试放宽城市或岗位关键词，或清除筛选。</p><button type="button" class="button secondary" id="clear-filter">清除筛选</button></div>
     </section>
     <p id="live-status" class="sr-only" role="status" aria-live="polite"></p>
