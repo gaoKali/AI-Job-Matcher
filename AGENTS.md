@@ -54,3 +54,6 @@ Git安全检查点d5850a5。company-sources独立登记117家，仅20家实际�
 
 ## 2026-10-06 最新授权：本地 PDF 优化报告
 用户授权仅增加完整优化报告PDF导出，不做Word/模板/云保存。检查点0dff450。独立report-print.js与print-report.css、成功结果顶部下载按钮；window.print仅当前结果，0新增AI，后台和Worker配置不变无需部署。130项测试通过，11页真实Chromium A4样本逐页核对全文与中文；短卡保留、长卡重复表头，原页面折叠不影响导出。测试provider只用于临时验收，不得进入正式入口。详见docs/PDF_REPORT_EXPORT.md。
+
+## 2026-10-06 MVP 冻结（最新边界）
+已完成PDF最后质量收尾，检查点444e211。完整稿不强制另起页，按原有换行自然分页；系统真实性占位仅在独立提醒区；首次有效导出提示关闭浏览器页眉页脚。134测试通过、10页真实合成PDF逐页验收、全文尾部完整，无新增AI或Worker变更。详见docs/MVP_FREEZE.md与docs/PDF_REPORT_EXPORT.md。停止新增功能，等待用户新授权；不要恢复旧岗位搜索方向。

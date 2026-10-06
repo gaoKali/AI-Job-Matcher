@@ -18,10 +18,11 @@
   .report-meta > div { display:flex; gap:3mm; margin:1mm 0; }
   .report-meta dt { width:44mm; flex-shrink:0; font-weight:600; }
   .report-meta dd { margin:0; overflow-wrap:anywhere; }
-  .report-section { margin:0 0 6mm; break-inside:auto; }
+  .report-section { margin:0 0 6mm; break-inside:auto; page-break-inside:auto; }
   .report-text { margin:0; white-space:pre-wrap; overflow-wrap:anywhere; word-break:normal; orphans:3; widows:3; }
   #pdf-report ul { margin:0; padding-left:5mm; }
   #pdf-report li { margin:0 0 1.5mm; orphans:2; widows:2; overflow-wrap:anywhere; }
+  .report-caption { break-after:avoid-page; page-break-after:avoid; }
   .report-caption,.report-empty { color:#58615e; font-size:9pt; margin:1.5mm 0 3mm; }
   .report-keywords { font-size:9pt; margin:3mm 0 0; overflow-wrap:anywhere; }
   .report-comparison { border:1px solid #bbc9c4; border-radius:2mm; padding:4mm; margin:0 0 4mm; break-inside:avoid-page; page-break-inside:avoid; }
@@ -29,7 +30,7 @@
   .report-reason { border-top:1px dashed #b5c9c3; padding-top:2.5mm; margin-top:2.5mm; font-size:9.5pt; }
   .report-comparison-long { break-inside:auto; page-break-inside:auto; box-decoration-break:clone; -webkit-box-decoration-break:clone; }
   .report-comparison-long .report-copy,.report-comparison-long .report-reason { break-inside:auto; }
-  .report-full-resume { break-before:page; page-break-before:always; }
+  .report-full-resume { break-before:auto; page-break-before:auto; break-inside:auto; page-break-inside:auto; }
   .report-full-resume .report-text { font-size:10.5pt; }
   .report-footer { margin-top:7mm; padding-top:3mm; border-top:1px solid #b5c9c3; font-size:8.5pt; color:#58615e; break-inside:avoid; page-break-inside:avoid; }
   #pdf-report a { color:#146b60; text-decoration:underline; }
@@ -45,3 +46,5 @@
   .report-long-copy tr,.report-long-copy tbody { break-inside:auto; page-break-inside:auto; }
   .report-comparison-long { margin-bottom:5mm; }
 }
+
+@media print { .report-full-resume .report-text:empty { min-height:1.65em; } }

@@ -274,7 +274,8 @@
       const name=item.company?(item.company===window.OptimizationContract.fallback?'原文片段':item.company)+' · '+(item.title===window.OptimizationContract.fallback?'职位待确认':item.title):item.name;
       return '<section class="rewrite-item"><h4>'+escape(name)+'</h4>'+(flagged?'<p class="fact-badge">建议确认真实性 · 未确认的改写已保留原文</p>':'')+'<div class="rewrite-grid"><div class="original-copy"><span class="overline">原文</span><p>'+escape(item.original)+'</p></div><div class="optimized-copy"><span class="overline">优化后</span><p>'+escape(item.optimized)+'</p></div></div><details class="quality-details rewrite-reason"><summary>为什么这么改</summary><p>'+escape(item.reason)+'</p></details></section>';
     }).join('')+'</article>':'';
-    const factDetails=checks.issues.length?'<article class="card optimization-card evidence-card"><h3>建议确认真实性</h3><p>基础核对发现 '+checks.issues.length+' 处待确认内容，已保留原文或撤回不确定的改写，其余结果可正常查看。</p><details class="quality-details"><summary>展开事实核对说明</summary>'+items(checks.issues.map(v=>v.message))+'</details></article>':'';
+    const verification=[...new Set([...checks.issues.map(v=>v.message),...(result.verificationNotes||[])])];
+    const factDetails=verification.length?'<article class="card optimization-card evidence-card"><h3>建议确认真实性</h3><p>以下内容需要核实；未确认的改写保留原文，其余结果可正常查看。</p><details class="quality-details"><summary>展开事实核对说明</summary>'+items(verification)+'</details></article>':'';
     window.ResumeReport.set(result,role);
     $('optimization-results').innerHTML=
       '<div class="report-actions"><div><strong>保存这份优化报告</strong><p class="subtle">打开打印窗口后选择“另存为 PDF”或“Microsoft Print to PDF”。仅在本机生成，不新增 AI 请求。</p></div><button type="button" class="button primary download-pdf-report">下载 PDF 报告</button></div><p id="pdf-report-status" class="inline-note" role="status" hidden></p>'+
@@ -302,7 +303,7 @@
     try{
       const result=await window.ResumeOptimization.optimize(input,{signal:controller.signal});
       if(generation!==state.generation)return;
-      state.optimization=result;renderOptimization(result,input.targetRole);announce('简历优化已完成，请核对原文、改写与完整简历。');
+      state.optimization=window.ResumeReport.presentation(result);renderOptimization(state.optimization,input.targetRole);announce('简历优化已完成，请核对原文、改写与完整简历。');
     }catch(error){
       if(generation!==state.generation||error.code==='CANCELLED')return;
       const detail=['127.0.0.1','localhost'].includes(location.hostname)?'（'+(error.code||'UNAVAILABLE')+(error.status?'，HTTP '+error.status:'')+'）':'';
