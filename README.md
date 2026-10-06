@@ -44,6 +44,8 @@
 |IP_DAILY_AI_LIMIT|普通变量|10 次 / IP / 日|
 |DAILY_AI_GLOBAL_LIMIT|普通变量|100 次 / 全站 / 日|
 
+以上三项限额只在 Cloudflare Dashboard → Workers & Pages → ai-job-matcher-api → Settings → Variables and Secrets 管理。修改普通变量并保存部署后作用于新请求，无需改代码。每分钟为滚动 60 秒；既有次数不因修改上限清零。缺失或无效时停止 AI 请求。初始值为 2、10、100。
+
 AI_USAGE 使用 Cloudflare SQLite Durable Object 原子计数。必须服务端 Siteverify 验证，原 token 不重复使用；独立签名会话仅在页面内存保留30分钟，绑定来源和 IP。达到限额停止请求，没有无限重试。
 
 ## 隐私与公测限制

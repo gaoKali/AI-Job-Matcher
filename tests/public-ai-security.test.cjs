@@ -87,3 +87,22 @@ test('前端首次验证一次、同一会话复用、并发只交换一次、�
  root.PublicAISecurity.invalidate('TURNSTILE_FAILED');await root.PublicAISecurity.ensureSession();assert.equal(verifications,2);
  const controller=new AbortController();controller.abort();await assert.rejects(root.PublicAISecurity.ensureSession({signal:controller.signal}),{code:'CANCELLED'});assert.equal(verifications,2);
 });
+
+test('Dashboard限额实时读取：同一实例调整三项阈值，无需代码修改或计数重置',async()=>{
+ const f=await fixture(),{handleAnalysis}=await import('../ai/handler.mjs');let calls=0;
+ const run=()=>handleAnalysis(req(f),f.env,async()=>{calls++;return model(sample.analysis);});
+ f.env.IP_MINUTE_AI_LIMIT='1';assert.equal((await run()).status,200);await blocked(f,'TOO_MANY_REQUESTS');
+ f.env.IP_MINUTE_AI_LIMIT='4';assert.equal((await run()).status,200);
+ f.env.IP_DAILY_AI_LIMIT='2';await blocked(f,'DAILY_USER_LIMIT_REACHED');
+ f.env.IP_DAILY_AI_LIMIT='4';assert.equal((await run()).status,200);
+ f.env.DAILY_AI_GLOBAL_LIMIT='3';await blocked(f,'SERVICE_DAILY_LIMIT_REACHED');
+ f.env.DAILY_AI_GLOBAL_LIMIT='4';assert.equal((await run()).status,200);
+ assert.equal(calls,4);assert.equal(await f.storage.get('global'),4);
+});
+test('三项限额缺失或无效时不回退硬编码阈值、不调用模型；部署不覆盖Dashboard',async()=>{
+ for(const key of ['IP_MINUTE_AI_LIMIT','IP_DAILY_AI_LIMIT','DAILY_AI_GLOBAL_LIMIT']){
+  for(const value of [undefined,'','0','-1','1.5','invalid']){const f=await fixture();if(value===undefined)delete f.env[key];else f.env[key]=value;await blocked(f,'SECURITY_UNAVAILABLE');assert.equal(f.storage.data.size,0);}
+ }
+ const config=fs.readFileSync('worker/wrangler.toml','utf8');assert.match(config,/keep_vars\s*=\s*true/);
+ assert.doesNotMatch(config,/^\s*(?:IP_MINUTE_AI_LIMIT|IP_DAILY_AI_LIMIT|DAILY_AI_GLOBAL_LIMIT)\s*=/m);
+});

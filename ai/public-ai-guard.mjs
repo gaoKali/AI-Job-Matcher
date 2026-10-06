@@ -5,8 +5,8 @@ export const guardCodes=['TOO_MANY_REQUESTS','DAILY_USER_LIMIT_REACHED','SERVICE
 export function guardStatus(code){return ['AI_DISABLED','SECURITY_UNAVAILABLE'].includes(code)?503:code.startsWith('TURNSTILE_')?403:guardCodes.includes(code)?429:null;}
 export function enabled(env){if(env.PUBLIC_AI_ENABLED==='false')throw c.failure('AI_DISABLED');}
 export function settings(env){
- const number=(v,d,max)=>v===undefined?d:/^[1-9][0-9]*$/.test(String(v))&&Number(v)<=max?Number(v):null;
- const ip=number(env.IP_DAILY_AI_LIMIT,10,10000),global=number(env.DAILY_AI_GLOBAL_LIMIT,100,100000),minute=number(env.IP_MINUTE_AI_LIMIT,2,100);
+ const number=(v,max)=>/^[1-9][0-9]*$/.test(String(v))&&Number(v)<=max?Number(v):null;
+ const ip=number(env.IP_DAILY_AI_LIMIT,10000),global=number(env.DAILY_AI_GLOBAL_LIMIT,100000),minute=number(env.IP_MINUTE_AI_LIMIT,100);
  if(!ip||!global||!minute)throw c.failure('SECURITY_UNAVAILABLE');return {ip,global,minute};
 }
 function identity(request,env){

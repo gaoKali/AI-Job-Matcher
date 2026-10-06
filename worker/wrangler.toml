@@ -7,9 +7,8 @@ keep_vars = true
 [vars]
 PUBLIC_AI_ENABLED = "true"
 FREE_PUBLIC_MODE = "true"
-IP_MINUTE_AI_LIMIT = "2"
-IP_DAILY_AI_LIMIT = "10"
-DAILY_AI_GLOBAL_LIMIT = "100"
+# Dashboard-managed quota variables; preserved by keep_vars=true.
+# IP_MINUTE_AI_LIMIT / IP_DAILY_AI_LIMIT / DAILY_AI_GLOBAL_LIMIT
 # Set TURNSTILE_SITE_KEY in dashboard after creating the Widget (public key).
 # TURNSTILE_SECRET_KEY is a Secret only; never put it in a file.
 FREE_MODE = "true"
