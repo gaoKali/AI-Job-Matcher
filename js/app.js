@@ -23,6 +23,7 @@
       const heading = $(step === 1 ? 'upload-title' : step === 2 ? 'analysis-title' : 'results-title');
       heading.focus({ preventScroll: true });
       heading.scrollIntoView({ block: 'start', behavior: 'auto' });
+      window.ResumeMotion?.step($('step-' + step));
     }
   }
   function setMethod(method) {
@@ -344,4 +345,55 @@
     });
   }
   $('analysis-mode').textContent = providers.analysisMode === 'demo' ? '开发演示 · 不调用 AI' : 'AI 简历分析 · 定向优化';
+})();
+
+(function () {
+  'use strict';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const seen = new WeakSet();
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('motion-visible');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.06 }) : null;
+  function reveal(root = document) {
+    if (reduced.matches || !observer) return;
+    root.querySelectorAll('.story-copy,.story-art,.story-section-title,.notebook-note,.journey-panels li,.companion-story,.workspace-intro,.section-heading,.guide-card,.analysis-card,.directions-card,.optimization-card').forEach((node, index) => {
+      if (seen.has(node)) return;
+      seen.add(node);
+      node.style.setProperty('--reveal-delay', Math.min(index % 3 * 90, 180) + 'ms');
+      node.classList.add('motion-ready');
+      observer.observe(node);
+    });
+  }
+  window.ResumeMotion = {
+    step(node) {
+      if (reduced.matches) return;
+      node.getAnimations().forEach(animation => animation.cancel());
+      node.animate([{opacity:0,transform:'translateX(35px)'},{opacity:1,transform:'translateX(0)'}],{duration:480,easing:'cubic-bezier(.2,.75,.25,1)'});
+    }
+  };
+  reveal();
+  ['analysis-content','optimization-results'].forEach(id => {
+    const node = document.getElementById(id);
+    new MutationObserver(() => reveal(node)).observe(node, { childList:true });
+  });
+  reduced.addEventListener('change', () => {
+    if (reduced.matches) document.querySelectorAll('.motion-ready').forEach(node => node.classList.add('motion-visible'));
+  });
+  document.addEventListener('click', event => {
+    const button = event.target.closest('.button');
+    if (!button || button.disabled || reduced.matches) return;
+    const rect = button.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.className = 'ink-ripple';
+    ripple.setAttribute('aria-hidden','true');
+    ripple.style.left = (event.detail ? event.clientX - rect.left - 9 : rect.width / 2 - 9) + 'px';
+    ripple.style.top = (event.detail ? event.clientY - rect.top - 9 : rect.height / 2 - 9) + 'px';
+    button.append(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove(), {once:true});
+    setTimeout(() => ripple.remove(), 800);
+  });
 })();
