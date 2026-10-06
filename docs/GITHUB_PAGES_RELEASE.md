@@ -30,3 +30,14 @@ GitHub 账号 gaoKali 已登录，公开仓库 AI-Job-Matcher 表单已填写，
 代码已推送 origin/master（0b3e815）。GitHub Pages 设置显示当前 disabled、Source=Deploy from a branch，等待用户本人选择 GitHub Actions。尚无已发布网址，未修改生产 CORS，未进行公开 AI 验收或最终版本标记。
 
 用户已于2026-10-06确认 Pages Source 选择 GitHub Actions，授权继续静态发布。触发重新部署以取代启用 Pages 前可能失败的运行；不修改产品代码。正式网址确认后仍须暂停等待本人添加 Turnstile Hostname。
+
+## 正式公网验收完成（2026-10-06）
+- GitHub Pages：https://gaokali.github.io/AI-Job-Matcher/ ，现有 Actions 首次正式部署成功（运行 37465673503）。
+- 用户已配置 Turnstile 正式 hostname；Worker 精确 Origin 白名单加入 https://gaokali.github.io，保留本地来源，没有通配符。
+- 现有 Worker 重新部署成功，版本 d901f136-bc81-4418-9ee1-2f9a9c63e226。保留 Dashboard Secrets、Base URL 和三项动态限额。
+- 正式网站上传合成文字 PDF，读取 136 字符；Turnstile 自动验证通过，真实 Qwen 简历分析成功；随后产品运营中文 JD 优化成功，匹配度 85，独立签名会话复用成功。仅执行分析与优化各一次，没有继续请求模型。
+- 保守事实检查对过长或扩大职责的改写保留原文；前后对照、确认提醒、完整简历均显示。
+- PDF 按钮显示关闭页眉页脚提示；从当前真实结果的报告 DOM 与原打印 CSS 渲染 3 页 PDF，并逐页检查中文、前后对照和完整简历，无空白页及截断。原生打印对话框的“另存为 PDF”最终保存由用户选择，未自动操控系统打印窗口。
+- 390×844 手机宽度：页面宽 375，不发生横向溢出，表单及结果可访问；已恢复桌面视口。
+- 正式网站捕获的 warn/error 日志为空；全部 152 项回归测试通过。发布包不包含后端、测试、日志或凭据，Git 当前及历史扫描未发现凭据命中。
+- 保持 UI、Prompt、PDF 核心、qwen3.8-flash 不变；岗位搜索及 WebSearch 默认关闭。

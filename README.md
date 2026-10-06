@@ -20,11 +20,11 @@
 
 ## GitHub Pages
 
-公开仓库计划为 `AI-Job-Matcher`。Settings → Pages → Source 选择 GitHub Actions。工作流自动测试、打包和发布。
+正式网站：https://gaokali.github.io/AI-Job-Matcher/ 。公开仓库：https://github.com/gaoKali/AI-Job-Matcher 。GitHub Actions 自动测试、打包和发布。
 
 `node tools/build-pages.cjs` 只将网页必要资源复制到 `_site`，不包含后端、测试文件、日志或凭据。相对资源路径支持 `/AI-Job-Matcher/`。
 
-网址确定后，必须将 `用户名.github.io` 加入 Turnstile Hostnames，并将 `https://用户名.github.io` 加入 Worker ALLOWED_ORIGINS；都不带仓库路径，本地来源保留。公网发布与真实验收尚待完成。
+正式 Turnstile Hostname 为 `gaokali.github.io`；Worker 已允许精确 Origin `https://gaokali.github.io`，保留本地来源，不使用通配符。正式网站已完成真实 AI 分析及优化验收。
 
 ## Cloudflare Worker / Turnstile
 
@@ -57,3 +57,4 @@ AI_USAGE 使用 Cloudflare SQLite Durable Object 原子计数。必须服务端 
 `/health`、本地解析、已有报告查看和 PDF 下载不计 AI 次数。保存 PDF 时选择“另存为 PDF”并关闭“页眉和页脚”。开发演示仅本机可用，公开域名不能通过 `?demo=1` 开启。
 
 详见 [安全保护](docs/PUBLIC_AI_SECURITY.md)。开源依赖许可保留在 vendor 目录。
+
