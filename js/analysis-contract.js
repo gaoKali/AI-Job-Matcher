@@ -2,6 +2,13 @@
   'use strict';
   const MAX_CHARS = 12000;
   const messages = {
+    TOO_MANY_REQUESTS: '操作有点快，请稍后再试。',
+    DAILY_USER_LIMIT_REACHED: '今天的免费 AI 使用次数已经达到上限，请明天再来。',
+    SERVICE_DAILY_LIMIT_REACHED: '今天的免费 AI 体验额度已经用完，请明天再试。',
+    AI_DISABLED: 'AI 服务当前暂时维护中，请稍后再试。',
+    TURNSTILE_REQUIRED: '安全验证没有完成，请重新尝试。',
+    TURNSTILE_FAILED: '安全验证没有完成，请重新尝试。',
+    SECURITY_UNAVAILABLE: '安全验证暂时不可用，请联系网站维护者完成配置。',
     EMPTY_INPUT: '请先上传或粘贴简历。', INPUT_TOO_LONG: '简历分析最多支持 12,000 个字符，请在“粘贴文本”中精简后重试。',
     NOT_CONFIGURED: 'AI 服务尚未配置，请联系网站维护者完成配置。你的简历尚未发送给 AI。',
     AUTH_FAILED: 'AI 服务的授权配置无效，请联系网站维护者检查密钥。',

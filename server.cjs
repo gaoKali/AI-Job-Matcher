@@ -11,6 +11,7 @@ const allowed = new Map([
   ['/assets/favicon.svg', 'image/svg+xml'], ['/tools/live-search-test.html','text/html; charset=utf-8'], ['/tools/live-search-test.js','text/javascript; charset=utf-8']
 ]);
 allowed.set('/tools/direct-search-test.html','text/html; charset=utf-8');allowed.set('/tools/direct-search-test.js','text/javascript; charset=utf-8');
+allowed.set('/js/public-ai-security.js','text/javascript; charset=utf-8');
 allowed.set('/js/optimization-contract.js','text/javascript; charset=utf-8');
 allowed.set('/js/optimization-provider.js','text/javascript; charset=utf-8');
 allowed.set('/print-report.css','text/css; charset=utf-8');
@@ -49,7 +50,7 @@ const server = http.createServer(async (request, response) => {
   if (!contentType) { response.writeHead(404); response.end('Not found'); return; }
   fs.readFile(path.join(__dirname, pathname.slice(1)), (error, data) => {
     if (error) { response.writeHead(500); response.end('Preview file unavailable'); return; }
-    response.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'self'; connect-src 'self' https://*.workers.dev; worker-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" });
+    response.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff', 'Content-Security-Policy': "default-src 'self'; connect-src 'self' https://ai-job-matcher-api.gaoweishmily.workers.dev https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; worker-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'" });
     response.end(request.method === 'HEAD' ? undefined : data);
   });
 });

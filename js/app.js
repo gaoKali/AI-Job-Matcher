@@ -236,7 +236,9 @@
     } catch (error) {
       if (generation !== state.generation || error.code === 'CANCELLED') return;
       const diagnostic = ['127.0.0.1', 'localhost', '[::1]'].includes(window.location.hostname) ? '（' + (error.code || 'UNAVAILABLE') + (error.status ? '，HTTP ' + error.status : '，未取得 HTTP 状态') + '）' : '';
-      displayError('resume-error', (error.message || 'AI 分析暂时失败，请稍后重试。') + diagnostic);
+      const safeCodes=['TOO_MANY_REQUESTS','DAILY_USER_LIMIT_REACHED','SERVICE_DAILY_LIMIT_REACHED','AI_DISABLED','TURNSTILE_REQUIRED','TURNSTILE_FAILED','SECURITY_UNAVAILABLE'];
+      const message=diagnostic||safeCodes.includes(error.code)?error.message:'AI 分析暂时失败，请稍后重试。';
+      displayError('resume-error', (message || 'AI 分析暂时失败，请稍后重试。') + diagnostic);
       console.warn('Resume analysis:', error.code || 'UNAVAILABLE');
     }
     finally { if (generation === state.generation) { state.busy = false; state.aiAbort = null; stopLoading(); $('analyze-button').disabled = false; } }
@@ -308,7 +310,8 @@
     }catch(error){
       if(generation!==state.generation||error.code==='CANCELLED')return;
       const detail=['127.0.0.1','localhost'].includes(location.hostname)?'（'+(error.code||'UNAVAILABLE')+(error.status?'，HTTP '+error.status:'')+'）':'';
-      displayError('optimization-error','简历优化暂时失败，请稍后重试。'+detail);
+      const safety=['TOO_MANY_REQUESTS','DAILY_USER_LIMIT_REACHED','SERVICE_DAILY_LIMIT_REACHED','AI_DISABLED','TURNSTILE_REQUIRED','TURNSTILE_FAILED','SECURITY_UNAVAILABLE'].includes(error.code);
+      displayError('optimization-error',(safety?error.message:'简历优化暂时失败，请稍后重试。')+detail);
     }finally{if(generation===state.generation){state.busy=false;state.optimizeAbort=null;stopOptimizationLoading();}}
   });
   $('optimization-results').addEventListener('click',async event=>{

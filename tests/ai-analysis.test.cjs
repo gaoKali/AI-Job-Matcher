@@ -7,8 +7,10 @@ const contract = require('../js/analysis-contract.js');
 const sample = require('./analysis-sample.cjs');
 const clone = x => JSON.parse(JSON.stringify(x));
 const env = { AI_API_KEY: 'unit-test-only', AI_BASE_URL: 'https://unit-test.cn-beijing.maas.aliyuncs.com/compatible-mode/v1', ALLOWED_ORIGINS: 'http://127.0.0.1:4173' };
+let security;
+require('node:test').beforeEach(async()=>{security=await require('./security-fixture.cjs').fixture();Object.assign(env,security.env,{AI_BASE_URL:'https://unit-test.cn-beijing.maas.aliyuncs.com/compatible-mode/v1'});});
 const responseFor = analysis => new Response(JSON.stringify({ choices: [{ finish_reason: 'stop', message: { content: JSON.stringify(analysis) } }] }));
-const requestFor = (body, options = {}) => new Request('http://127.0.0.1:4173/api/resume/analyze', { method: 'POST', headers: { Origin: 'http://127.0.0.1:4173', 'Content-Type': 'application/json', ...options.headers }, body: JSON.stringify(body), ...options });
+const requestFor = (body, options = {}) => new Request('http://127.0.0.1:4173/api/resume/analyze', { method: 'POST', headers: { ...security.headers, ...options.headers }, body: JSON.stringify(body), ...options });
 test('输入空白、异常类型、超长内容被阻止，清理HTML且脱敏联系方式', () => {
   for (const value of ['', '  ', null, 'x'.repeat(12001)]) assert.throws(() => contract.clean(value));
   assert.equal(contract.clean('<script>ignore</script><b>SQL</b>\u0000'), 'SQL');
@@ -105,7 +107,7 @@ test('Worker/本地共享处理器：来源、格式、大小、单份输入、�
   const preflight = await handleAnalysis(new Request('http://local/api/resume/analyze', { method: 'OPTIONS', headers: { Origin: 'http://127.0.0.1:4173' } }), env); assert.equal(preflight.status, 204);
 });
 function client(fetcher, search = '', diagnosticConsole) {
-  const root = { AnalysisContract: contract, JobMatcherProviders: { analysisProvider: { analyze: async () => ({ isMock: true }) } }, location: { search, hostname: '127.0.0.1' }, AnalysisConfig: { endpoint: '/api/resume/analyze', timeoutMs: 20 } };
+  const root = { PublicAISecurity:{ensureSession:async()=> 'unit-session',invalidate(){}}, AnalysisContract: contract, JobMatcherProviders: { analysisProvider: { analyze: async () => ({ isMock: true }) } }, location: { search, hostname: '127.0.0.1' }, AnalysisConfig: { endpoint: '/api/resume/analyze', timeoutMs: 20 } };
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../js/analysis-provider.js'), 'utf8'), { window: root, URLSearchParams, AbortController, fetch: fetcher, setTimeout, clearTimeout, ...(diagnosticConsole ? { console: diagnosticConsole } : {}) });
   return root;
 }
@@ -170,7 +172,7 @@ test('连接检查采用真实接口空JSON请求；OPTIONS与POST错误均保�
   const origin = 'http://127.0.0.1:4173';
   const preflight = await handleAnalysis(new Request('https://proxy.invalid/api/resume/analyze', { method: 'OPTIONS', headers: { Origin: origin, 'Access-Control-Request-Method': 'POST', 'Access-Control-Request-Headers': 'content-type' } }), env);
   assert.equal(preflight.status, 204);
-  for (const [name,value] of [['Access-Control-Allow-Origin',origin],['Access-Control-Allow-Methods','POST, OPTIONS'],['Access-Control-Allow-Headers','Content-Type']]) assert.equal(preflight.headers.get(name), value);
+  for (const [name,value] of [['Access-Control-Allow-Origin',origin],['Access-Control-Allow-Methods','POST, OPTIONS'],['Access-Control-Allow-Headers','Content-Type, X-AI-Session']]) assert.equal(preflight.headers.get(name), value);
   const root = client(async (_url, options) => {
     assert.deepEqual(JSON.parse(options.body), { resumeText: '' });
     const req = new Request('https://proxy.invalid/api/resume/analyze', { ...options, headers: { ...options.headers, Origin: origin } });
@@ -178,7 +180,7 @@ test('连接检查采用真实接口空JSON请求；OPTIONS与POST错误均保�
     assert.equal(response.status, 400);
     assert.equal(response.headers.get('Access-Control-Allow-Origin'), origin);
     assert.equal(response.headers.get('Access-Control-Allow-Methods'), 'POST, OPTIONS');
-    assert.equal(response.headers.get('Access-Control-Allow-Headers'), 'Content-Type');
+    assert.equal(response.headers.get('Access-Control-Allow-Headers'), 'Content-Type, X-AI-Session');
     return response;
   });
   assert.equal((await root.JobMatcherProviders.analysisProvider.checkConnection()).ok, true);

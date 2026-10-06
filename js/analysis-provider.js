@@ -13,6 +13,7 @@
     return Object.assign(error, { status, requestId, upstreamStatus });
   }
   async function request(text, signal, timeoutMs) {
+    const aiSession = text ? await window.PublicAISecurity.ensureSession({signal}) : null;
     const controller = new AbortController();
     const cancel = () => controller.abort();
     if (signal?.aborted) throw contract.failure('CANCELLED');
@@ -23,7 +24,7 @@
     report('request');
     try {
       const response = await fetch(endpoint, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'omit', cache: 'no-store',
+        method: 'POST', headers: { 'Content-Type': 'application/json', ...(aiSession ? {'X-AI-Session':aiSession} : {}) }, credentials: 'omit', cache: 'no-store',
         body: JSON.stringify({ resumeText: text }), signal: controller.signal
       });
       status = response.status;
@@ -34,6 +35,7 @@
       if (Number.isInteger(payload?.error?.upstreamStatus) && payload.error.upstreamStatus >= 100 && payload.error.upstreamStatus <= 599) upstreamStatus = payload.error.upstreamStatus;
       if (!response.ok) {
         const code = Object.hasOwn(contract.messages, payload?.error?.code) ? payload.error.code : 'UNAVAILABLE';
+        window.PublicAISecurity?.invalidate(code);
         throw code === 'INVALID_SCHEMA' ? contract.schemaFailure(payload?.error?.missingFields) : contract.failure(code);
       }
       if (payload?.mode !== 'live') throw contract.failure('INVALID_SCHEMA');

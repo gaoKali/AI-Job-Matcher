@@ -5,6 +5,13 @@ workers_dev = true
 keep_vars = true
 
 [vars]
+PUBLIC_AI_ENABLED = "true"
+FREE_PUBLIC_MODE = "true"
+IP_MINUTE_AI_LIMIT = "2"
+IP_DAILY_AI_LIMIT = "10"
+DAILY_AI_GLOBAL_LIMIT = "100"
+# Set TURNSTILE_SITE_KEY in dashboard after creating the Widget (public key).
+# TURNSTILE_SECRET_KEY is a Secret only; never put it in a file.
 FREE_MODE = "true"
 WEBSEARCH_ENABLED = "false"
 JOBS_ENABLED = "false"
@@ -40,3 +47,12 @@ class_name = "CompanyJobPool"
 [[migrations]]
 tag = "company-pool-v1"
 new_sqlite_classes = ["CompanyJobPool"]
+
+# Atomic anonymous AI quotas using Free SQLite Durable Objects.
+[[durable_objects.bindings]]
+name = "AI_USAGE"
+class_name = "AIUsage"
+
+[[migrations]]
+tag = "public-ai-usage-v1"
+new_sqlite_classes = ["AIUsage"]

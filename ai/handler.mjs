@@ -1,5 +1,6 @@
 import '../js/analysis-contract.js';
 import { analyzeResume } from './provider.mjs';
+import {protectedFetcher,guardStatus,enabled} from './public-ai-guard.mjs';
 const contract = globalThis.AnalysisContract;
 const entries = new Map();
 const MAX_BYTES = 60000;
@@ -38,7 +39,7 @@ export async function handleAnalysis(request, env, fetcher = fetch) {
   if (!origin || !origins.includes(origin)) return send(403, { error: { code: 'ACCESS_DENIED' } });
   headers['Access-Control-Allow-Origin'] = origin;
   headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS';
-  headers['Access-Control-Allow-Headers'] = 'Content-Type';
+  headers['Access-Control-Allow-Headers'] = 'Content-Type, X-AI-Session';
   if (request.method === 'OPTIONS') {
     console.info(JSON.stringify({ event: 'resume-api', requestId, method: 'OPTIONS', path: '/api/resume/analyze', status: 204 }));
     return new Response(null, { status: 204, headers: { ...headers, 'Access-Control-Max-Age': '600' } });
@@ -50,13 +51,14 @@ export async function handleAnalysis(request, env, fetcher = fetch) {
     if (!body || Array.isArray(body) || Object.keys(body).join(',') !== 'resumeText') throw contract.failure('BAD_REQUEST');
     const text = contract.redact(contract.clean(body.resumeText));
     // No billing attempt before configuration/input validation. No automatic retry.
+    enabled(env);
     if (!env.AI_API_KEY) throw contract.failure('NOT_CONFIGURED');
-    if (!permit(request.headers.get('CF-Connecting-IP') || 'local')) throw contract.failure('RATE_LIMIT');
-    const analysis = await analyzeResume(text, env, fetcher);
+    const guarded = await protectedFetcher(request,env,fetcher);
+    const analysis = await analyzeResume(text, env, guarded);
     return send(200, { mode: 'live', analysis });
   } catch (error) {
     const code = error.code === 'NETWORK' ? 'UPSTREAM_NETWORK' : Object.hasOwn(contract.messages, error.code) ? error.code : 'UNAVAILABLE';
-    const status = ['BAD_REQUEST','EMPTY_INPUT','INPUT_TOO_LONG'].includes(code) ? 400 : code === 'RATE_LIMIT' ? 429 : ['TIMEOUT','UPSTREAM_FALLBACK_TIMEOUT'].includes(code) ? 504 : code === 'NOT_CONFIGURED' ? 503 : 502;
+    const status = guardStatus(code) || (['BAD_REQUEST','EMPTY_INPUT','INPUT_TOO_LONG'].includes(code) ? 400 : code === 'RATE_LIMIT' ? 429 : ['TIMEOUT','UPSTREAM_FALLBACK_TIMEOUT'].includes(code) ? 504 : code === 'NOT_CONFIGURED' ? 503 : 502);
     const upstreamStatus = Number.isInteger(error.upstreamStatus) && error.upstreamStatus >= 100 && error.upstreamStatus <= 599 ? error.upstreamStatus : undefined;
     return send(status, { error: { code, ...(code === 'INVALID_SCHEMA' ? { missingFields: contract.safeMissingFields(error.missingFields) } : {}), ...(upstreamStatus ? { upstreamStatus } : {}) } });
   }

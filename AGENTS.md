@@ -69,3 +69,6 @@ Git安全检查点d5850a5。company-sources独立登记117家，仅20家实际�
 
 ## 2026-10-06 UI正式锁定与最终验收
 用户锁定当前黑白手绘/漫画/留白、Logo、人物与Landing结构；不得重新设计或新增装饰，只允许响应式/可读性/交互缺陷修复。验收前检查点baf551c；135测试通过，真实Qwen分析及优化各一次HTTP200，长PDF10页检查通过；5种视口验收，无岗位搜索正常入口。分析实测发现责任升级与专业扩写，前端基础事实校正回退原文并增加测试，不能宣称全面语义防编造。两张无损WebP与原PNG逐像素一致、体积减42.7%。参见docs/FINAL_MVP_ACCEPTANCE.md。Worker/Prompt/模型/Secret/BaseURL不改；JOBS_ENABLED及WEBSEARCH_ENABLED=false；不部署Pages，等待本人确认下一轮上线。
+
+## 2026-10-06 最新授权：公开上线前保护（未上线）
+以8738cdc为可用MVP。仅AI接口边界、匿名计数、首次Turnstile会话及对应安全提示/CSP；UI布局、Prompt、模型、PDF不动。PUBLIC_AI_ENABLED/FREE_PUBLIC_MODE=true，分析优化共享2次/60秒、10次/IP/北京时间日、100次/全站/日；每个实际上游尝试含既有fallback原子预留。新增Free SQLite AI_USAGE、按日HMAC匿名IP、30分钟签名会话；不存简历JD输出。148测试与Wrangler dry-run通过，0真实模型测试。尚未部署：等待用户创建Managed Widget并在已有Worker填TURNSTILE_SITE_KEY普通变量、TURNSTILE_SECRET_KEY Secret，之后再部署迁移并真人验收。不得宣称当前线上保护已生效。见docs/PUBLIC_AI_SECURITY.md。不要发布Pages或启用历史岗位方向。
