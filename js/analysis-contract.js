@@ -88,6 +88,27 @@
     });
     return result;
   }
-  root.AnalysisContract={MAX_CHARS,messages,failure,clean,redact,shape,schema,safeMissingFields,schemaFailure,normalizeAnalysisResult,validate};
+  // Conservative display safeguard for observed unsupported responsibility upgrades.
+  // This is a format-preserving local check, not another model call or full semantic proof.
+  function groundAnalysis(result, resumeText) {
+    const source = clean(resumeText);
+    const grounded = { ...result, strengths: [...result.strengths], coreSkills: [...result.coreSkills], missingInformation: [...result.missingInformation], recommendedDirections: result.recommendedDirections.map(item => ({...item})) };
+    const unsupported = value => (value.match(/主导|独立负责|全面负责|领导|带领|熟练|精通|管理\s*\d+\s*人/g) || []).some(term => !source.includes(term));
+    const sourceLines = source.split('\n');
+    const education = sourceLines.filter(line => /教育|学历|本科|硕士|博士|学士|大学|学院|Education|Bachelor|Master|PhD/i.test(line));
+    if (education.length) grounded.educationSummary = education.join('\n');
+    for (const field of ['candidateProfile','workExperienceSummary']) {
+      if (unsupported(grounded[field])) {
+        grounded[field] = sourceLines.filter(line => !education.includes(line)).join('\n');
+        grounded.missingInformation.push('分析摘要中的职责程度无法从原文确认，已保留原文信息；请核对实际责任范围。');
+      }
+    }
+    grounded.strengths = grounded.strengths.filter(value => !unsupported(value));
+    grounded.coreSkills = grounded.coreSkills.filter(value => !unsupported(value));
+    grounded.recommendedDirections = grounded.recommendedDirections.filter(item => !unsupported(item.evidence) && !unsupported(item.reason));
+    grounded.missingInformation = [...new Set(grounded.missingInformation)];
+    return grounded;
+  }
+  root.AnalysisContract={groundAnalysis,MAX_CHARS,messages,failure,clean,redact,shape,schema,safeMissingFields,schemaFailure,normalizeAnalysisResult,validate};
   if (typeof module !== 'undefined') module.exports = root.AnalysisContract;
 })(typeof window === 'undefined' ? globalThis : window);

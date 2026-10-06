@@ -335,3 +335,18 @@ test('安全格式差异经Worker及前端返回真实结果200，只有一次�
   const result=await root.JobMatcherProviders.analysisProvider.analyze({resumeText:sample.resumeText});
   assert.equal(calls,1);assert.equal(result.isMock,false);assert.equal(result.experienceYears,'5年');assert.deepEqual(Array.from(result.coreSkills),['SQL']);
 });
+
+ test('真实验收发现的职责升级与专业扩写回退原始事实，不额外调用模型', () => {
+  const source = '测试候选人\n合成科技有限公司 | 用户运营 | 2022年7月—2025年6月\n整理用户反馈并分类制作周报。协助页面测试。\n教育：合成大学，信息管理本科，2018年9月—2022年6月。';
+  const result = clone(sample.analysis);
+  result.workExperienceSummary = '主导用户反馈项目，熟练使用Excel。';
+  result.educationSummary = '合成大学，信息管理与信息系统专业本科。';
+  result.strengths = ['主导用户反馈分类项目','具有整理用户反馈的经历'];
+  const guarded = contract.groundAnalysis(result, source);
+  assert.doesNotMatch(guarded.workExperienceSummary, /主导|熟练/);
+  assert.equal(guarded.educationSummary, '教育：合成大学，信息管理本科，2018年9月—2022年6月。');
+  assert.deepEqual(guarded.strengths, ['具有整理用户反馈的经历']);
+  assert.ok(guarded.missingInformation.some(value => value.includes('责任范围')));
+  assert.doesNotThrow(() => contract.validate(guarded));
+  assert.match(result.workExperienceSummary, /主导/);
+ });

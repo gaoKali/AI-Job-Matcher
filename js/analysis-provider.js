@@ -37,7 +37,7 @@
         throw code === 'INVALID_SCHEMA' ? contract.schemaFailure(payload?.error?.missingFields) : contract.failure(code);
       }
       if (payload?.mode !== 'live') throw contract.failure('INVALID_SCHEMA');
-      const result = { ...contract.validate(contract.normalizeAnalysisResult(payload.analysis)), isMock: false };
+      const result = { ...contract.groundAnalysis(contract.validate(contract.normalizeAnalysisResult(payload.analysis)), text), isMock: false };
       report('success', status);
       return result;
     } catch (error) {

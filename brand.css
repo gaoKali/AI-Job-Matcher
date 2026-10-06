@@ -226,3 +226,12 @@ input:not([type=file]),textarea,select { transition:box-shadow .2s ease,border-c
 @keyframes status-pulse { 50%{opacity:.3;transform:scale(.6)} }
 }
 @media screen and (prefers-reduced-motion:reduce) { .motion-ready{opacity:1;transform:none; }.ink-ripple{display:none; } }
+
+/* Locked UI: only improve legibility of supporting text on narrow screens. */
+@media screen and (max-width:680px) {
+.inline-note,.button-caption,.text-meta,.workspace-caption,.story-footnote,.guide-tag,.guide-bottom,.section-heading p:not(.eyebrow),.report-actions p { font-size:12px;line-height:1.8; }
+.story-secondary,.text-button,.quiet-label { font-size:12px; }
+}
+
+/* Keep animated entrance edges from creating a temporary horizontal scrollbar. */
+@media screen { html,body { overflow-x:clip; } }
