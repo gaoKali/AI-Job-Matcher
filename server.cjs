@@ -20,6 +20,7 @@ allowed.set('/assets/story-scene.svg','image/svg+xml');
 allowed.set('/assets/companion.svg','image/svg+xml');
 allowed.set('/assets/character-drink-ink.png','image/png');
 allowed.set('/assets/character-cup-ink.png','image/png');
+allowed.set('/assets/character-drink-clean.png','image/png');
 const port = Number(process.env.PORT || 4173);
 const server = http.createServer(async (request, response) => {
   if (request.url.split('?')[0] === '/api/resume/analyze') {
