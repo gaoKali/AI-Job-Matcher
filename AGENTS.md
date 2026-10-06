@@ -60,3 +60,6 @@ Git安全检查点d5850a5。company-sources独立登记117家，仅20家实际�
 
 ## 2026-10-06 最新授权：插画手账视觉改版
 用户重新授权Landing Page与整站UI。改版前检查点7da118d；新增brand.css、原创story-scene.svg/companion.svg，保留三步业务DOM及AI逻辑。标题用本机楷体后备，不安装字体/框架；屏幕样式独立，PDF仅统一墨绿并实测全文完整。134测试通过，正式PDF/DOCX解析及手机/桌面布局回归；隔离合成provider验证分析/优化显示，本轮0线上AI调用。详见docs/ILLUSTRATED_UI.md。不要部署Pages、改Worker配置或增加搜索/Agent/登录/数据库。
+
+## 最新视觉要求：纯黑白与用户提供人物
+用户2026-10-06提供两张戴眼镜人物图，要求黑白线稿并用于Logo，覆盖上轮原创小怪兽视觉。检查点a43b3b0；内置imagegen线稿转换资产已保存正式assets，保留原第一图署名水印。生成式编辑不保证逐像素不变，不宣称完美复刻。业务逻辑不改，页面不再显示旧SVG角色；PDF黑白专业版，来源和验收见docs/ILLUSTRATED_UI.md。
