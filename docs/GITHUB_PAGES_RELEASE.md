@@ -26,3 +26,5 @@ GitHub 账号 gaoKali 已登录，公开仓库 AI-Job-Matcher 表单已填写，
 
 ## Dashboard 限额管理与仓库创建（2026-10-06）
 用户已创建 Public 仓库 https://github.com/gaoKali/AI-Job-Matcher 。三项 AI 限额从环境变量严格读取：IP_MINUTE_AI_LIMIT / IP_DAILY_AI_LIMIT / DAILY_AI_GLOBAL_LIMIT；不再有缺失时的硬编码默认值，缺失或无效时 fail closed。wrangler.toml 删除这三项赋值，keep_vars=true 保留 Dashboard 值，未来部署不覆盖它们。动态阈值、缺失/错误配置和全部回归合计152项通过。已部署原 Worker，版本 edf514b2-84e6-4085-a2f4-096a2a321889。无真实 AI 测试调用。完整线上配置下载被自动审批拒绝，未执行，不使用替代方法读取 Secrets。
+
+代码已推送 origin/master（0b3e815）。GitHub Pages 设置显示当前 disabled、Source=Deploy from a branch，等待用户本人选择 GitHub Actions。尚无已发布网址，未修改生产 CORS，未进行公开 AI 验收或最终版本标记。
