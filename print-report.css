@@ -7,12 +7,12 @@
   #pdf-report { display:block!important; font:10.5pt/1.65 "Microsoft YaHei","PingFang SC","Noto Sans CJK SC",Arial,sans-serif; color:#202a29; width:auto; }
   #pdf-report * { box-sizing:border-box; box-shadow:none!important; text-shadow:none!important; max-height:none!important; overflow:visible!important; }
   #pdf-report h1,#pdf-report h2,#pdf-report h3,#pdf-report h4 { break-after:avoid-page; page-break-after:avoid; line-height:1.35; }
-  #pdf-report h1 { font-size:23pt; margin:5mm 0; color:#146b60; }
-  #pdf-report h2 { font-size:14pt; margin:0 0 3mm; padding-bottom:2mm; border-bottom:1px solid #b5c9c3; color:#146b60; }
+  #pdf-report h1 { font-size:23pt; margin:5mm 0; color:#365e47; }
+  #pdf-report h2 { font-size:14pt; margin:0 0 3mm; padding-bottom:2mm; border-bottom:1px solid #b5c9c3; color:#365e47; }
   #pdf-report h3 { font-size:11.5pt; margin:0 0 3mm; }
-  #pdf-report h4 { font-size:10pt; margin:0 0 1.5mm; color:#146b60; }
-  .report-header { margin-bottom:7mm; padding-bottom:4mm; border-bottom:2px solid #146b60; break-inside:avoid; page-break-inside:avoid; }
-  .report-brand { font-weight:700; color:#146b60; font-size:13pt; }
+  #pdf-report h4 { font-size:10pt; margin:0 0 1.5mm; color:#365e47; }
+  .report-header { margin-bottom:7mm; padding-bottom:4mm; border-bottom:2px solid #365e47; break-inside:avoid; page-break-inside:avoid; }
+  .report-brand { font-weight:700; color:#365e47; font-size:13pt; }
   .report-brand span { font-size:9pt; font-weight:400; margin-left:3mm; }
   .report-meta { margin:0; display:block; font-size:10pt; }
   .report-meta > div { display:flex; gap:3mm; margin:1mm 0; }
@@ -33,7 +33,7 @@
   .report-full-resume { break-before:auto; page-break-before:auto; break-inside:auto; page-break-inside:auto; }
   .report-full-resume .report-text { font-size:10.5pt; }
   .report-footer { margin-top:7mm; padding-top:3mm; border-top:1px solid #b5c9c3; font-size:8.5pt; color:#58615e; break-inside:avoid; page-break-inside:avoid; }
-  #pdf-report a { color:#146b60; text-decoration:underline; }
+  #pdf-report a { color:#365e47; text-decoration:underline; }
 }
 
 @media print {
@@ -41,7 +41,7 @@
   .report-long-copy thead { display:table-header-group; }
   .report-long-copy th { text-align:left; border:1px solid #bbc9c4; padding:3mm 4mm; }
   .report-long-copy th h3 { margin:0!important; }
-  .report-long-copy th span { color:#146b60; }
+  .report-long-copy th span { color:#365e47; }
   .report-long-copy td { border:1px solid #bbc9c4; padding:3mm 4mm; vertical-align:top; }
   .report-long-copy tr,.report-long-copy tbody { break-inside:auto; page-break-inside:auto; }
   .report-comparison-long { margin-bottom:5mm; }
