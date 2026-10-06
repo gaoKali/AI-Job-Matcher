@@ -72,3 +72,6 @@ Git安全检查点d5850a5。company-sources独立登记117家，仅20家实际�
 
 ## 2026-10-06 最新授权：公开上线前保护（未上线）
 以8738cdc为可用MVP。仅AI接口边界、匿名计数、首次Turnstile会话及对应安全提示/CSP；UI布局、Prompt、模型、PDF不动。PUBLIC_AI_ENABLED/FREE_PUBLIC_MODE=true，分析优化共享2次/60秒、10次/IP/北京时间日、100次/全站/日；每个实际上游尝试含既有fallback原子预留。新增Free SQLite AI_USAGE、按日HMAC匿名IP、30分钟签名会话；不存简历JD输出。148测试与Wrangler dry-run通过，0真实模型测试。尚未部署：等待用户创建Managed Widget并在已有Worker填TURNSTILE_SITE_KEY普通变量、TURNSTILE_SECRET_KEY Secret，之后再部署迁移并真人验收。不得宣称当前线上保护已生效。见docs/PUBLIC_AI_SECURITY.md。不要发布Pages或启用历史岗位方向。
+
+## 2026-10-06 保护版本已正式部署（覆盖上条未部署状态）
+用户自行配置Turnstile两变量后已授权继续部署。现有ai-job-matcher-api版本f7ad89af-a663-4666-8d7a-09f976a63820，AI_USAGE迁移/绑定生效。148测试全通过；正式本地页面真实Widget自动通过、服务端Siteverify及签名会话成功，分析/优化各一次HTTP200，优化复用会话，没有代点人工验证码，没有额外Qwen测试调用。实际限额边界由mock测试验证，不消耗100次模型。Secret/BaseURL/UI/Prompt/PDF/模型未变，无新Worker或Pages。见docs/PUBLIC_AI_SECURITY.md。

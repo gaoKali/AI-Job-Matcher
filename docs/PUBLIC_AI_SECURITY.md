@@ -5,7 +5,7 @@
 
 ## 当前完成状态
 
-代码及模拟安全测试完成；Worker 离线打包检查通过。**尚未部署此安全版本**，现有线上 Worker 不应被视为已受新增保护。用户需要先创建真实 Turnstile Widget 并在现有 Worker 配置两个值，再由 Codex 部署绑定与迁移、完成真人验证。未填任何假生产 Key。
+用户已自行创建真实 Widget 并配置公开 Site Key 和 Secret。2026-10-06 已部署保护版本至现有 ai-job-matcher-api，版本 f7ad89af-a663-4666-8d7a-09f976a63820。AI_USAGE 绑定/迁移已上线；本地正式网页真实 Turnstile 会话验证、Qwen 分析和优化均成功。没有读取或输出真实 Secret，没有填写假生产 Key。
 
 ## 默认配置
 
@@ -56,3 +56,14 @@
 - [控制台创建 Widget](https://developers.cloudflare.com/turnstile/get-started/widget-management/dashboard/)。
 - [本地开发域名](https://developers.cloudflare.com/turnstile/troubleshooting/testing/)：可添加 localhost 和 127.0.0.1。
 - [Durable Objects 免费计划](https://developers.cloudflare.com/durable-objects/platform/pricing/)：采用 SQLite 类；沿用项目已有免费原生能力。免费账户超过平台配额会停止服务，不自动升级套餐。
+
+## 2026-10-06 部署与真实验证记录
+
+- 148 项完整回归和安全测试仍全部通过。真实测试仅发送网页内置合成示例简历和合成 JD，没有真实个人数据。
+- 在正式本地网页首次点击分析后，真实 Widget 自动验证，Worker Siteverify 检查成功并签发短期 HMAC 会话；受保护分析返回 HTTP 200（2026-10-06T10:52:45Z）。没有绕过或代点人工 CAPTCHA。
+- 同一页面进入优化，无新的验证框；复用独立签名会话而非原始 Turnstile token，优化返回 HTTP 200（2026-10-06T10:54:23Z）。本轮仅两次真实 Qwen 请求，无新增重试。
+- 上线的分析和优化成功说明实际 AI_USAGE 持久绑定可读写，模型请求已走预留门控。2/60秒、10/IP/日、100/全站/日的边界、并发和失败拦截用模拟测试验证；没有为测试人为消耗10或100次真实模型额度。
+- UI、Prompt、AI_API_KEY、AI_BASE_URL、qwen3.8-flash、PDF代码保持不变。现有Cloudflare服务和变量保留；没有创建新Worker或发布Pages。
+- 用户可打开 http://127.0.0.1:4173/，刷新后上传或粘贴简历，点击进入简历分析；若出现安全验证框，由用户本人确认，再进入优化。相同页面30分钟内复用会话，刷新、过期或IP变化需重新验证。已生成报告始终可查看与下载。
+
+前面的“创建Widget后再部署”步骤与离线验收描述保留为历史流程；当前部署状态以本节及文档顶部为准。
