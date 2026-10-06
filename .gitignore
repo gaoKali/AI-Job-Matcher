@@ -16,3 +16,12 @@ node_modules/
 /tmp/pdfs/
 /output/pdf/
 /tmp/pdf-final-chrome/
+
+# Never publish local artifacts, logs or private keys.
+/_site/
+/tmp/
+/.tooling/
+*.pem
+*.key
+*.p12
+*.pfx

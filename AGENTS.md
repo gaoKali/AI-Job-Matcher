@@ -75,3 +75,6 @@ Git安全检查点d5850a5。company-sources独立登记117家，仅20家实际�
 
 ## 2026-10-06 保护版本已正式部署（覆盖上条未部署状态）
 用户自行配置Turnstile两变量后已授权继续部署。现有ai-job-matcher-api版本f7ad89af-a663-4666-8d7a-09f976a63820，AI_USAGE迁移/绑定生效。148测试全通过；正式本地页面真实Widget自动通过、服务端Siteverify及签名会话成功，分析/优化各一次HTTP200，优化复用会话，没有代点人工验证码，没有额外Qwen测试调用。实际限额边界由mock测试验证，不消耗100次模型。Secret/BaseURL/UI/Prompt/PDF/模型未变，无新Worker或Pages。见docs/PUBLIC_AI_SECURITY.md。
+
+## 最新授权：GitHub Pages 公测发布准备
+只允许公开部署及生产配置，不修改已锁定 UI/插画/Prompt/解析/优化/PDF/安全策略。150 项测试通过，静态资源白名单构建和子路径验收完成，当前尚未上传 GitHub。用户要求 GitHub 登录/授权、创建仓库确认、Pages 开关、Turnstile 正式 hostname 需要本人操作时暂停。当前 gaoKali 的 AI-Job-Matcher Public 创建表单已填写，等待本人点击；实际发布和公开 AI 验收完成前不得创建 Public MVP v1.0 标签。详情见 docs/GITHUB_PAGES_RELEASE.md。保留现有 Worker、Secret/BaseURL、全部限额及关闭岗位搜索/MCP。

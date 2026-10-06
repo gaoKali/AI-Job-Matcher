@@ -49,7 +49,7 @@
     } finally { clearTimeout(timer); signal?.removeEventListener('abort', cancel); }
   }
   providers.mockAnalysisProvider = providers.analysisProvider;
-  const demo = new URLSearchParams(window.location.search).get('demo') === '1';
+  const demo = development && new URLSearchParams(window.location.search).get('demo') === '1';
   providers.analysisMode = demo ? 'demo' : 'live';
   if (demo) return;
   providers.analysisProvider = {
