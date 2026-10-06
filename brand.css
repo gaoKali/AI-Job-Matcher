@@ -178,16 +178,16 @@ input:not([type=range]):not([type=file]),select,textarea{background:#fff;border-
 .story-art::before { content:"✧";left:2px;top:44%;font-size:32px;transform:rotate(-12deg); }
 .story-art::after { content:"⌁";right:0;bottom:17%;font-size:35px;transform:rotate(15deg); }
 .guide-card { border:0;padding:18px 25px 24px;overflow:visible; }
-.guide-companion { display:block;float:none;align-self:center;width:148px;height:210px;margin:-10px auto 6px;object-fit:contain;-webkit-mask-image:radial-gradient(ellipse farthest-side,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse farthest-side,#000 62%,transparent 100%); }
-.guide-card::before { content:"✧";position:absolute;right:20%;top:65px;font:28px var(--hand);color:#888;transform:rotate(12deg);pointer-events:none; }
-.guide-card::after { content:"⌁";position:absolute;left:17%;top:140px;font:27px var(--hand);color:#888;transform:rotate(-15deg);pointer-events:none; }
+.guide-companion { display:block;float:none;align-self:center;width:250px;height:250px;max-width:100%;aspect-ratio:1;margin:-6px auto 4px;object-fit:cover;object-position:center 62%;border-radius:50%;-webkit-mask-image:radial-gradient(circle closest-side,#000 80%,transparent 100%);mask-image:radial-gradient(circle closest-side,#000 80%,transparent 100%); }
+.guide-card::before { content:"✧";position:absolute;right:3%;top:75px;font:28px var(--hand);color:#888;transform:rotate(12deg);pointer-events:none; }
+.guide-card::after { content:"⌁";position:absolute;left:3%;top:160px;font:27px var(--hand);color:#888;transform:rotate(-15deg);pointer-events:none; }
 .guide-bottom { border:0;padding-top:20px;position:relative; }
 .guide-bottom::before { content:"";display:block;width:55px;height:8px;margin-bottom:15px;border-top:1px solid #999;border-radius:50%;transform:rotate(-4deg); }
 @media(max-width:680px) {
 .story-art { padding:8px 20px 12px; }
 .story-art::before { font-size:25px;left:0; }.story-art::after { font-size:28px;right:0; }
 .guide-card { border:0;padding:24px 12px; }
-.guide-companion { width:138px;height:195px;margin:0 auto 8px; }
-.guide-card::before { right:23%;top:75px; }.guide-card::after { left:21%;top:140px; }
+.guide-companion { width:240px;height:240px;margin:0 auto 4px; }
+.guide-card::before { right:7%;top:85px; }.guide-card::after { left:7%;top:160px; }
 }
 }
