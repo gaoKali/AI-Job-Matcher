@@ -166,6 +166,12 @@
       <div class="analysis-grid"><article class="card analysis-card"><h3>工作经历摘要</h3>${profile.experience.map(item => `<div class="timeline-item"><strong>${escape(item.title)}</strong><small>${escape(item.date)}</small><p>${escape(item.summary)}</p></div>`).join('')}</article><article class="card analysis-card"><h3>简历优势</h3>${list(profile.strengths)}</article><article class="card analysis-card"><h3>简历不足与改进建议</h3>${list(profile.weaknesses)}</article><article class="card analysis-card"><h3>如何理解这份分析</h3>${list(['此处使用独立的虚构画像，不读取或判断你的真实经历。', '未来真实分析会区分事实、推断与建议，并保留原文依据。', '缺少描述不等于缺少能力；成果数字必须来自真实材料。'])}</article></div>
       <article class="card directions-card"><h3>推荐求职方向 · 模拟建议</h3><div class="directions">${profile.directions.map(item => `<div class="direction"><strong>${escape(item.title)}</strong><p>${escape(item.reason)}</p><button type="button" class="text-button choose-direction" data-role="${escape(item.title)}">用作目标岗位 →</button></div>`).join('')}</div></article>`;
   }
+  function loadingHint(id, verifying){
+    const hint=$(id).querySelector('span');
+    if(!hint)return;
+    if(!hint.dataset.aiDefaultHint)hint.dataset.aiDefaultHint=hint.textContent;
+    hint.textContent=verifying?'验证成功后自动继续，此时尚未开始 AI 处理。':hint.dataset.aiDefaultHint;
+  }
   let loadingTimer;
   function stopLoading() {
     clearInterval(loadingTimer);
@@ -174,6 +180,7 @@
     $('analyze-button').textContent = '进入简历分析 →';
   }
   function startLoading() {
+    loadingHint('analysis-loading',false);
     const hints = ['正在分析你的简历……', '正在梳理你的工作经历……', '正在识别核心技能……', '正在判断适合的求职方向……'];
     let index = 0;
     $('analysis-loading').hidden = false;
@@ -221,8 +228,11 @@
     state.busy = true;
     $('analyze-button').disabled = true;
     $('resume-error').hidden = true;
-    startLoading();
+    startLoading();clearInterval(loadingTimer);loadingHint('analysis-loading',true);
+    $('analysis-loading-text').textContent='请先完成下方安全验证……';$('analyze-button').textContent='等待安全验证……';
     try {
+      if(providers.analysisMode!=='demo')await window.PublicAISecurity.ensureSession({signal:controller.signal});
+      startLoading();
       const profile = await providers.analysisProvider.analyze({ resumeText: text, signal: controller.signal });
       if (generation !== state.generation) return;
       state.profile = profile;
@@ -260,6 +270,7 @@
     $('optimization-form').querySelectorAll('input,textarea,button').forEach(el=>el.disabled=false);
   }
   function startOptimizationLoading(){
+    loadingHint('optimization-loading',false);
     const hints=['正在理解目标岗位……','正在分析 JD 关键词……','正在匹配你的真实经历……','正在优化简历表达……','正在生成针对性简历……'];let index=0;
     $('optimization-loading').hidden=false;$('optimization-loading-text').textContent=hints[0];
     $('optimization-form').setAttribute('aria-busy','true');
@@ -303,7 +314,10 @@
     try{window.OptimizationContract.input(input);}catch(error){displayError('optimization-error',error.message);return;}
     const generation=state.generation,controller=new AbortController();state.optimizeAbort=controller;state.busy=true;
     state.optimization=null;window.ResumeReport.clear();$('optimization-results').replaceChildren();$('optimization-results').hidden=true;$('optimization-error').hidden=true;startOptimizationLoading();
+    clearInterval(optimizationTimer);loadingHint('optimization-loading',true);$('optimization-loading-text').textContent='请先完成下方安全验证……';$('optimize-button').textContent='等待安全验证……';
     try{
+      await window.PublicAISecurity.ensureSession({signal:controller.signal});
+      startOptimizationLoading();
       const result=await window.ResumeOptimization.optimize(input,{signal:controller.signal});
       if(generation!==state.generation)return;
       state.optimization=window.ResumeReport.presentation(result);renderOptimization(state.optimization,input.targetRole);announce('简历优化已完成，请核对原文、改写与完整简历。');

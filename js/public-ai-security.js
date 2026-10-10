@@ -15,24 +15,31 @@ function loadSDK(){
  if(sdk)return sdk;
  sdk=new Promise((resolve,reject)=>{
   const script=document.createElement('script');script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';script.async=true;
-  const timer=setTimeout(()=>{script.remove();reject(c.failure('TURNSTILE_FAILED'));},15000);
+  const timer=setTimeout(()=>{script.remove();reject(c.failure('TURNSTILE_FAILED'));},30000);
   script.addEventListener('load',()=>{clearTimeout(timer);window.turnstile?resolve():reject(c.failure('TURNSTILE_FAILED'));},{once:true});
   script.addEventListener('error',()=>{clearTimeout(timer);script.remove();reject(c.failure('TURNSTILE_FAILED'));},{once:true});document.head.append(script);
  }).catch(error=>{sdk=null;throw error;});return sdk;
 }
 async function challenge(siteKey,signal){
- await loadSDK();if(signal.aborted)throw c.failure('CANCELLED');
+ if(signal.aborted)throw c.failure('CANCELLED');
  return new Promise((resolve,reject)=>{
+  document.querySelectorAll('.ai-security-check').forEach(el=>el.remove());
   const mount=document.createElement('div');mount.setAttribute('aria-label','安全验证');mount.className='ai-security-check';
   const button=document.querySelector('#step-3:not([hidden]) #optimize-button')||document.getElementById('analyze-button');
   if(button)button.before(mount);else document.body.append(mount);
+  const note=document.createElement('p');note.setAttribute('role','status');note.textContent='正在加载安全验证……';mount.append(note);const widgetMount=document.createElement('div');mount.append(widgetMount);mount.scrollIntoView({block:'nearest'});
   let widget=null,finished=false;
-  const done=(error,token)=>{if(finished)return;finished=true;clearTimeout(timer);signal.removeEventListener('abort',cancel);if(widget!==null)window.turnstile.remove(widget);mount.remove();error?reject(error):resolve(token);};
+  const done=(error,token)=>{if(finished)return;finished=true;clearTimeout(timer);signal.removeEventListener('abort',cancel);if(widget!==null){try{window.turnstile.remove(widget);}catch{}}
+if(error&&error.code!=='CANCELLED'){
+ note.textContent='安全验证未完成。请重试；如果验证框未加载，请检查网络或使用 Chrome、Edge、Safari，留意拦截插件。';
+ const retry=document.createElement('button');retry.type='button';retry.className='button secondary';retry.textContent='重新安全验证';retry.addEventListener('click',()=>{if(button&&!button.disabled){retry.disabled=true;button.click();}});
+ mount.append(retry);mount.scrollIntoView({block:'nearest'});
+}else mount.remove();error?reject(error):resolve(token);};
   const cancel=()=>done(c.failure('CANCELLED'));
   const timer=setTimeout(()=>done(c.failure('TURNSTILE_FAILED')),120000);
   signal.addEventListener('abort',cancel,{once:true});
-  try{widget=window.turnstile.render(mount,{sitekey:siteKey,action:'resume_ai',theme:'light',size:'flexible',appearance:'interaction-only','retry':'never','refresh-expired':'never',callback:token=>done(null,token),'error-callback':()=>{done(c.failure('TURNSTILE_FAILED'));return true;},'expired-callback':()=>done(c.failure('TURNSTILE_FAILED')),'before-interactive-callback':()=>mount.scrollIntoView({block:'nearest'})});}
-  catch{done(c.failure('TURNSTILE_FAILED'));}
+  loadSDK().then(()=>{if(finished)return;note.textContent='请完成下方安全验证，成功后自动继续。';try{widget=window.turnstile.render(widgetMount,{sitekey:siteKey,action:'resume_ai',theme:'light',size:'flexible',appearance:'always','retry':'never','refresh-expired':'never',callback:token=>done(null,token),'error-callback':code=>{const safeCode=/^\d{3,6}$/.test(String(code))?String(code):'unknown';console.warn('Turnstile error',{code:safeCode});done(c.failure('TURNSTILE_FAILED'));return true;},'expired-callback':()=>done(c.failure('TURNSTILE_FAILED')),'timeout-callback':()=>done(c.failure('TURNSTILE_FAILED')),'before-interactive-callback':()=>mount.scrollIntoView({block:'nearest'})});}
+  catch{done(c.failure('TURNSTILE_FAILED'));}}).catch(()=>done(c.failure('TURNSTILE_FAILED')));
  });
 }
 async function ensureSession({signal}={}){

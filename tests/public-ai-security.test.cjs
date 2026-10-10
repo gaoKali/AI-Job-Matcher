@@ -78,9 +78,9 @@ test('安全计数、响应和日志不泄露个人信息、Secret、完整IP；
  const frontend=['index.html','js/public-ai-security.js','js/analysis-provider.js','js/optimization-provider.js'].map(n=>fs.readFileSync(n,'utf8')).join('');assert.doesNotMatch(frontend,/TURNSTILE_SECRET_KEY|AI_API_KEY|Authorization|localStorage|sessionStorage/);
 });
 test('前端首次验证一次、同一会话复用、并发只交换一次、到期/失败重新验证；不持久化',async()=>{
- const contract=require('../js/analysis-contract.js');let renders=0,verifications=0,configs=0,removed=0;const mount=()=>({setAttribute(){},remove(){removed++;}});
+ const contract=require('../js/analysis-contract.js');let renders=0,verifications=0,configs=0,removed=0;const mount=()=>({setAttribute(){},append(){},addEventListener(){},scrollIntoView(){},remove(){removed++;}});
  const root={AnalysisContract:contract,AnalysisConfig:{endpoint:'https://worker.invalid/api/resume/analyze'},turnstile:{render(el,options){renders++;assert.equal(options.action,'resume_ai');assert.equal(options.retry,'never');queueMicrotask(()=>options.callback('fixture-token'));return 'widget';},remove(){}}};
- const document={createElement:mount,querySelector:()=>({before(){}}),getElementById:()=>null,body:{append(){}},head:{append(){throw Error('SDK already mocked');}}};
+ const document={createElement:mount,querySelectorAll:()=>[],querySelector:()=>({before(){}}),getElementById:()=>null,body:{append(){}},head:{append(){throw Error('SDK already mocked');}}};
  vm.runInNewContext(fs.readFileSync('js/public-ai-security.js','utf8'),{window:root,location:{href:'http://127.0.0.1:4173/'},document,URL,AbortController,setTimeout,clearTimeout,fetch:async(url,options)=>{if(url.endsWith('/config')){configs++;return Response.json({siteKey:'fixture-site'});}verifications++;assert.equal(JSON.parse(options.body).token,'fixture-token');return Response.json({session:'mock-signed-session',expiresAt:Date.now()+1800000});}});
  assert.deepEqual(await Promise.all([root.PublicAISecurity.ensureSession(),root.PublicAISecurity.ensureSession()]),['mock-signed-session','mock-signed-session']);
  assert.equal(await root.PublicAISecurity.ensureSession(),'mock-signed-session');assert.equal(renders,1);assert.equal(verifications,1);assert.equal(configs,1);assert.equal(removed,1);
